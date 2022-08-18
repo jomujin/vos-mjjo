@@ -24,8 +24,10 @@ class TestClass(unittest.TestCase):
 
     def test_look_up_array(self):
         res = self.instance.look_up_array(self.test_date)
+        print('@@@@@@@@@@@@@@@@@@@@', res[0].term)
         self.assertEqual(res[0].term, '19880416')
 
     def test_look_up_one(self):
         res = self.instance.look_up_one(self.test_date)
+        print('@@@@@@@@@@@@@@@@@@@@', res.term)
         self.assertEqual(res.term, '19880416')

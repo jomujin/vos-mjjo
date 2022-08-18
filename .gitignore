@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 /package/date_dictionary.txt
+*.ipynb

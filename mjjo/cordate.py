@@ -10,14 +10,13 @@ class CorDate():
         self.this_year = datetime.now().year
         self.this_year_two_length = int(str(self.this_year)[2:])
         self.max_edit_distance = 2
-        self.sym_spell.load_dictionary(self.dictionary_path, 0, 1, separator="$")
         
-    # def load_date_dictionary(self):
-    #     try:
-    #         self.sym_spell.load_dictionary(self.dictionary_path, 0, 1, separator="$")
-    #         return True
-    #     except:
-    #         return False
+    def load_date_dictionary(self):
+        try:
+            self.sym_spell.load_dictionary(self.dictionary_path, 0, 1, separator="$")
+            return True
+        except:
+            return False
 
     def get_correct_array(
         self, 
@@ -30,7 +29,7 @@ class CorDate():
             raise TypeError("type of object must be string")
         dates = check_correct_ymd(date, self.this_year)
         if check_two_length_year(dates):
-            dates = get_Four_length_year(dates)
+            dates = get_Four_length_year(dates, self.this_year_two_length)
         return dates
 
     def get_correct_one(
@@ -85,14 +84,18 @@ class CorDate():
             Verbosity.ALL,
             max_edit_distance=max_edit_distance
         )
-        suggestion = suggestions[0]
-        return suggestion
+        if len(suggestions):
+            suggestion = suggestions[0]
+            return suggestion
+        else:
+            print("No Result")
+            return None
 
 def convert_type_year(y):
-            if y == '':
-                return 0
-            else:
-                return int(y)
+    if y == '':
+        return 0
+    else:
+        return int(y)
 
 def convert_type_month_day(md):
     if md in ['', '0', '00']:
@@ -166,9 +169,10 @@ def get_correct_array(
     if not isinstance(date, str):
         raise TypeError("type of object must be string")
     this_year = datetime.now().year
+    this_year_two_length = int(str(this_year)[2:])
     dates = check_correct_ymd(date, this_year)
     if check_two_length_year(dates):
-        dates = get_Four_length_year(dates)
+        dates = get_Four_length_year(dates, this_year_two_length)
     return dates
 
 def get_correct_one(

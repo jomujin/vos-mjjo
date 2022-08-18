@@ -9,5 +9,5 @@ from mjjo.cordate import (
     get_correct_one
 )
 
-__all__ = ['module']
-__version__ = '0.0.2' 
+__all__ = ['mjjo']
+__version__ = '0.0.3' 
