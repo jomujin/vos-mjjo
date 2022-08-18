@@ -10,13 +10,14 @@ class CorDate():
         self.this_year = datetime.now().year
         self.this_year_two_length = int(str(self.this_year)[2:])
         self.max_edit_distance = 2
+        self.sym_spell.load_dictionary(self.dictionary_path, 0, 1, separator="$")
         
-    def load_date_dictionary(self):
-        try:
-            self.sym_spell = self.sym_spell.load_dictionary(self.dictionary_path, 0, 1, separator="$")
-            return True
-        except:
-            return False
+    # def load_date_dictionary(self):
+    #     try:
+    #         self.sym_spell.load_dictionary(self.dictionary_path, 0, 1, separator="$")
+    #         return True
+    #     except:
+    #         return False
 
     def get_correct_array(
         self, 
