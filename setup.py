@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="vos_mjjo", # Replace with your own username
-    version="0.0.3",
+    version="0.0.7",
     author="mjjo",
     author_email="mj.jo@valueofspace.com",
     description="vos-mjjo package",
@@ -13,6 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/jomujin/vos-mjjo",
     packages=setuptools.find_packages(),
+    package_data={"mjjo": ["date_dictionary.txt"]},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
