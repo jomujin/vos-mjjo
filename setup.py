@@ -28,5 +28,5 @@ setuptools.setup(
             'shortcut2 = package.module:func',
         ]
     },
-    test_suite='tests.test_module'
+    test_suite='tests.test_cordate'
 )

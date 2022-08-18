@@ -13,7 +13,7 @@ class CorDate():
         
     def load_date_dictionary(self):
         try:
-            self.sym_spell.load_dictionary(self.dictionary_path, 0, 1, separator="$")
+            self.sym_spell = self.sym_spell.load_dictionary(self.dictionary_path, 0, 1, separator="$")
             return True
         except:
             return False
