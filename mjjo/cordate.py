@@ -6,7 +6,6 @@ from symspellpy import SymSpell, Verbosity
 class CorDate():
     def __init__(self):
         self.sym_spell = SymSpell()
-        # self.dictionary_path = 'mjjo/date_dictionary.txt'
         self.dictionary_path = pkg_resources.resource_filename(
             "mjjo", 
             "date_dictionary.txt"
@@ -16,6 +15,11 @@ class CorDate():
         self.max_edit_distance = 2
         
     def load_date_dictionary(self):
+        """
+        라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
+		Symspellpy를 이용하는 look_up_array, look_up_one 전에 수행필요
+
+        """
         try:
             self.sym_spell.load_dictionary(self.dictionary_path, 0, 1, separator="$")
             return True
@@ -26,7 +30,10 @@ class CorDate():
         self, 
         date: str
     ) -> list:
-        """Example Text
+        """
+        입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜를 리스트로 생성함
+        날짜 생성 규칙이란 연,월,일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지
+        일반적으로 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지할 수 있음
 
         """
         if not isinstance(date, str):
@@ -40,7 +47,10 @@ class CorDate():
         self, 
         date: str
     ) -> str:
-        """Example Text
+        """
+        입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜 리스트중 가장 최신날짜를 출력
+        날짜 생성 규칙이란 연,월,일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지
+        일반적으로 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지할 수 있음
 
         """
         if not isinstance(date, str):
@@ -52,7 +62,8 @@ class CorDate():
         date : str,
         max_edit_distance : Optional[int] = None,
     ) -> list:
-        """Example Text
+        """
+        연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 출력
 
         """
         if not isinstance(date, str):
@@ -73,7 +84,8 @@ class CorDate():
         date : str,
         max_edit_distance : Optional[int] = None,
     ):
-        """Example Text
+        """
+        연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 중 가장 거리, 빈도 가까운 값 출력
 
         """
         if not isinstance(date, str):
@@ -92,7 +104,6 @@ class CorDate():
             suggestion = suggestions[0]
             return suggestion
         else:
-            print("No Result")
             return None
 
 def convert_type_year(y):
@@ -167,7 +178,10 @@ def get_correct_date_from_dates(dates, this_year_two_length):
 def get_correct_array( 
     date: str
 ) -> list:
-    """Example Text
+    """
+    입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜를 리스트로 생성함
+    날짜 생성 규칙이란 연,월,일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지
+    일반적으로 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지할 수 있음
 
     """
     if not isinstance(date, str):
@@ -182,7 +196,10 @@ def get_correct_array(
 def get_correct_one(
     date: str
 ) -> str:
-    """Example Text
+    """
+    입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜 리스트중 가장 최신날짜를 출력
+    날짜 생성 규칙이란 연,월,일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지
+    일반적으로 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지할 수 있음
 
     """
     if not isinstance(date, str):
