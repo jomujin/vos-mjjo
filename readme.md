@@ -3,7 +3,7 @@ vos-mjjo <br>
 ========
 
 
-vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.7
+vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.8
 
 </br>
 
