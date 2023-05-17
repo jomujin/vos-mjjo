@@ -163,7 +163,10 @@ class TestClass(unittest.TestCase):
 
 
     def test_correct_value(self):
-        """cordate.get_correct_one 함수 테스트 메소드"""
+        """
+        get_correct_one 함수 실행결과 테스트 메소드
+        cordate.get_correct_one 함수 실행결과 테스트 메소드
+        """
 
         self.instance.load_date_dictionary()
 
