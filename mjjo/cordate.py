@@ -51,9 +51,9 @@ class CorDate():
 
         if not isinstance(date, str):
             raise TypeError("type of object must be string")
-        dates = __check_correct_ymd(date, self.this_year)
-        if __check_two_length_year(dates):
-            dates = __get_four_length_year(dates, self.this_year_two_length)
+        dates = _check_correct_ymd(date, self.this_year)
+        if _check_two_length_year(dates):
+            dates = _get_four_length_year(dates, self.this_year_two_length)
         return dates
 
 
@@ -70,8 +70,8 @@ class CorDate():
 
         if not isinstance(date, str):
             raise TypeError("type of object must be string")
-        return __get_correct_date_from_dates(
-            __check_correct_ymd(
+        return _get_correct_date_from_dates(
+            _check_correct_ymd(
                 date,
                 self.this_year
             ),
@@ -100,6 +100,7 @@ class CorDate():
             Verbosity.ALL,
             max_edit_distance=max_edit_distance
         )
+        suggestions = list(_.term for _ in suggestions)
         return suggestions
 
 
@@ -126,13 +127,13 @@ class CorDate():
             max_edit_distance=max_edit_distance
         )
         if len(suggestions):
-            suggestion = suggestions[0]
+            suggestion = suggestions[0].term
             return suggestion
         else:
             return None
 
 
-def __convert_type_year(y: str) -> int:
+def _convert_type_year(y: str) -> int:
 
     if y == '':
         return 0
@@ -140,7 +141,7 @@ def __convert_type_year(y: str) -> int:
         return int(y)
 
 
-def __convert_type_month_day(md: str) -> int:
+def _convert_type_month_day(md: str) -> int:
 
     if md in ['', '0', '00']:
         return 1
@@ -148,7 +149,7 @@ def __convert_type_month_day(md: str) -> int:
         return int(md)
 
 
-def __check_correct_ymd(
+def _check_correct_ymd(
     date: str, 
     this_year: int
 ) -> List[str]:
@@ -159,9 +160,9 @@ def __check_correct_ymd(
             try:
                 d, e_date = date[len(date)-idx_day:], date[:len(date)-idx_day]
                 m, y = e_date[len(e_date)-idx_month:], e_date[:len(e_date)-idx_month]
-                d = __convert_type_month_day(d)
-                m = __convert_type_month_day(m)
-                y = __convert_type_year(y)
+                d = _convert_type_month_day(d)
+                m = _convert_type_month_day(m)
+                y = _convert_type_year(y)
                 candidate_date = datetime(y, m, d)
                 if (y > 0) and (y < (this_year +1)) and candidate_date:
                     candidate_date = candidate_date.strftime("%Y%m%d")
@@ -171,7 +172,7 @@ def __check_correct_ymd(
     return list(candidate_dates)
 
 
-def __check_two_length_year(
+def _check_two_length_year(
     dates: List[str]
 ) -> bool:
 
@@ -181,7 +182,7 @@ def __check_two_length_year(
         return False
 
 
-def __change_four_length_year(
+def _change_four_length_year(
     year: str,
     this_year_two_length: int
 ) -> str:
@@ -200,19 +201,19 @@ def __change_four_length_year(
     return year
 
 
-def __get_four_length_year(
+def _get_four_length_year(
     dates: List[str], 
     this_year_two_length
 ) -> List[str]:
 
     new_candidate_dates = list()
     for date in dates:
-        date = __change_four_length_year(date[:4], this_year_two_length) + date[4:]
+        date = _change_four_length_year(date[:4], this_year_two_length) + date[4:]
         new_candidate_dates.append(date)
     return new_candidate_dates
 
 
-def __get_one_date(
+def _get_one_date(
     dates: List[str]
 ) -> Optional[str]:
 
@@ -226,14 +227,14 @@ def __get_one_date(
         return None
 
 
-def __get_correct_date_from_dates(
+def _get_correct_date_from_dates(
     dates: List[str],
     this_year_two_length: int
 ) -> Optional[str]:
 
-    if __check_two_length_year(dates):
-        dates = __get_four_length_year(dates, this_year_two_length)
-    return __get_one_date(dates)
+    if _check_two_length_year(dates):
+        dates = _get_four_length_year(dates, this_year_two_length)
+    return _get_one_date(dates)
 
 
 def get_correct_array( 
@@ -250,9 +251,9 @@ def get_correct_array(
         raise TypeError("type of object must be string")
     this_year = datetime.now().year
     this_year_two_length = int(str(this_year)[2:])
-    dates = __check_correct_ymd(date, this_year)
-    if __check_two_length_year(dates):
-        dates = __get_four_length_year(dates, this_year_two_length)
+    dates = _check_correct_ymd(date, this_year)
+    if _check_two_length_year(dates):
+        dates = _get_four_length_year(dates, this_year_two_length)
     return dates
 
 
@@ -270,8 +271,8 @@ def get_correct_one(
         raise TypeError("type of object must be string")
     this_year = datetime.now().year
     this_year_two_length = int(str(this_year)[2:])
-    return __get_correct_date_from_dates(
-        __check_correct_ymd(
+    return _get_correct_date_from_dates(
+        _check_correct_ymd(
             date,
             this_year
         ),
