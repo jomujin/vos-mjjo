@@ -83,7 +83,7 @@ class CorDate():
         self,
         date : str,
         max_edit_distance : Optional[int] = None,
-    ) -> list:
+    ) -> List[str]:
 
         """
         연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 출력
@@ -108,7 +108,7 @@ class CorDate():
         self,
         date : str,
         max_edit_distance : Optional[int] = None,
-    ) -> Optional[Any]:
+    ) -> Optional[str]:
 
         """
         연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 중 가장 거리, 빈도 가까운 값 출력
@@ -239,7 +239,7 @@ def _get_correct_date_from_dates(
 
 def get_correct_array( 
     date: str
-) -> list:
+) -> List[str]:
 
     """
     입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜를 리스트로 생성함
