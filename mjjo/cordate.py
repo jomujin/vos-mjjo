@@ -192,7 +192,7 @@ def _change_four_length_year(
             if year[2] == '0': # 00090101처럼 000으로 시작되는 경우
                 pass
             else:
-                if int(year) in list(range(0, this_year_two_length)):
+                if int(year) in list(range(0, this_year_two_length +1)):
                     year = '20' + year[2:]
                 else:
                     year = '19' + year[2:]
