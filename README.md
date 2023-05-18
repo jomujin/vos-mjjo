@@ -8,7 +8,15 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.
 
 # Notable Changes
 
-First Version
+### Update 0.0.9 - 2023.05
+
+-   Add github-action workflow
+-   Add decision tree model for creating date_dictionary
+-   Update date_dictionary
+-   Refactoring Cordate class
+    -   Naming Convention for Built-in Functions
+    -   Applying static type hints
+    -   Adding module tests
 
 </br>
 
