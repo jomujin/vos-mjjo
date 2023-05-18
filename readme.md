@@ -2,27 +2,25 @@ vos-mjjo <br>
 [![PyPI version](https://badge.fury.io/py/vos-mjjo.svg)](https://pypi.org/project/vos-mjjo/)
 ========
 
-
-vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.8
+vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.9
 
 </br>
 
-Notable Changes
-===============
+# Notable Changes
+
 First Version
 
 </br>
 
-Install
-=======
+# Install
+
 ```python
 pip install vos-mjjo
 ```
 
 </br>
 
-Usage
-=====
+# Usage
 
 **get_correct_array**
 
@@ -150,19 +148,18 @@ None
 
 </br>
 
-
 **look_up_array**
 
 ```python
 from mjjo import cordate
 
-CD = cordate.CorDate() 
+CD = cordate.CorDate()
 # CorDate 클래스 부여
-CD.load_date_dictionary() 
+CD.load_date_dictionary()
 # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
 # CD.look_up_array(date : str) -> list
 test_date = '99990101'
-suggestions = CD.look_up_array(test_date) 
+suggestions = CD.look_up_array(test_date)
 # 연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 출력
 for sugg in suggestions:
   print(sugg)
@@ -201,13 +198,13 @@ Output:
 ```python
 from mjjo import cordate
 
-CD = cordate.CorDate() 
+CD = cordate.CorDate()
 # CorDate 클래스 부여
-CD.load_date_dictionary() 
+CD.load_date_dictionary()
 # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
-# CD.look_up_one(date : str) -> str 
+# CD.look_up_one(date : str) -> str
 test_date = '99990101'
-suggestion = CD.look_up_one(test_date) 
+suggestion = CD.look_up_one(test_date)
 # 연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 중 가장 거리, 빈도 가까운 값 출력
 print(suggestion)
 ```
