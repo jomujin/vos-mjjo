@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="vos_mjjo", # Replace with your own username
-    version="0.0.8",
+    version="0.0.9",
     author="mjjo",
     author_email="mj.jo@valueofspace.com",
     description="vos-mjjo package",
