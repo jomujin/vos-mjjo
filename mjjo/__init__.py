@@ -1,13 +1,16 @@
-# /package/__init__.py
-"""
-Description for Package
-"""
+version = '0.0.10' 
+author = 'mjjo'
+description = 'My Library'
+license = 'MIT'
 
-from mjjo.cordate import (
-    CorDate,
-    get_correct_array,
-    get_correct_one
-)
+def __version__():
+    return version
 
-__all__ = ['mjjo']
-__version__ = '0.0.8' 
+def __author__():
+    return author
+
+def __description__():
+    return description
+
+def __license__():
+    return license

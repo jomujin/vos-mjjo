@@ -2,7 +2,7 @@ vos-mjjo <br>
 [![PyPI version](https://badge.fury.io/py/vos-mjjo.svg)](https://pypi.org/project/vos-mjjo/)
 ========
 
-vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.9
+vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.10
 
 </br>
 
@@ -10,13 +10,22 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.
 
 ### Update 0.0.9 - 2023.05
 
--   Add github-action workflow
--   Add decision tree model for creating date_dictionary
--   Update date_dictionary
+-   Add GitHub Action workflow
+-   Add decision tree model to creating date_dictionary
+-   Update the date_dictionary
 -   Refactoring Cordate class
-    -   Naming Convention for Built-in Functions
-    -   Applying static type hints
-    -   Adding module tests
+    -   Apply naming Convention for Built-in Functions
+    -   Apply static type hints
+    -   Add module tests
+
+### Update 0.0.10 - 2023.05
+
+-   Refactoring Cordate class
+    -   Add metadata-providing method
+    -   Add methods (look_up_one_clean, look_up_array_clean)
+    -   Enhance method descriptions
+    -   Add error handling based on method input conditions
+    -   Add module tests
 
 </br>
 
