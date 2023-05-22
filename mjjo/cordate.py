@@ -2,8 +2,7 @@ import pkg_resources
 from datetime import datetime
 from typing import (
     Optional,
-    List,
-    Any
+    List
 )
 from symspellpy import SymSpell, Verbosity
 from dataclasses import dataclass
