@@ -1,14 +1,20 @@
 import setuptools
+from mjjo import (
+    author,
+    version,
+    description
+)
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="vos_mjjo", # Replace with your own username
-    version="0.0.9",
-    author="mjjo",
+    version=version,
+    author=author,
     author_email="mj.jo@valueofspace.com",
-    description="vos-mjjo package",
+    description=description,
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/jomujin/vos-mjjo",
