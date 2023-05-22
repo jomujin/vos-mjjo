@@ -3,12 +3,10 @@ import sys
 import unittest
 from datetime import datetime
 from symspellpy import SymSpell
-from typing import (
-    Optional,
-    List,
-    Any
-)
-from mjjo import (
+from typing import ( List )
+os.chdir('../')
+sys.path.append(os.getcwd())
+from mjjo.cordate import (
     CorDate,
     get_correct_array,
     get_correct_one
@@ -30,6 +28,7 @@ class TestClass(unittest.TestCase):
         cls.date_6 = '88416'
         cls.date_7 = '19884'
         cls.date_8 = '1988'
+        cls.err_str = 'abc'
 
 
     @classmethod
@@ -85,6 +84,9 @@ class TestClass(unittest.TestCase):
         with self.assertRaises(TypeError):
             get_correct_array(int(self.date_1))
 
+        with self.assertRaises(ValueError):
+            get_correct_array(self.err_str)
+
         res = get_correct_array(self.date_1)
         self.assertTrue(res, List[str])
         self.assertEqual(res, ['19880416'])
@@ -94,7 +96,10 @@ class TestClass(unittest.TestCase):
         """get_correct_one 함수 테스트 메소드"""
 
         with self.assertRaises(TypeError):
-            get_correct_array(int(self.date_1))
+            get_correct_one(int(self.date_1))
+
+        with self.assertRaises(ValueError):
+            get_correct_array(self.err_str)
 
         res = get_correct_one(self.date_1)
         self.assertTrue(res, str)
@@ -116,10 +121,13 @@ class TestClass(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             self.instance.look_up_array(int(self.date_1))
-        
+
+        with self.assertRaises(ValueError):
+            self.instance.look_up_array(self.err_str)
+
         res = self.instance.look_up_array(self.date_1)
         self.assertTrue(res, List[str])
-        self.assertEqual(res[0], '19880416')
+        self.assertEqual(res[0].term, '19880416')
 
 
     def test_cls_look_up_one(self):
@@ -129,11 +137,45 @@ class TestClass(unittest.TestCase):
         
         with self.assertRaises(TypeError):
             self.instance.look_up_one(int(self.date_1))
-        
+
+        with self.assertRaises(ValueError):
+            self.instance.look_up_one(self.err_str)
+
         res = self.instance.look_up_one(self.date_1)
         self.assertTrue(res, str)
-        self.assertEqual(res, '19880416')
+        self.assertEqual(res.term, '19880416')
 
+
+    def test_cls_look_up_array_clean(self):
+        """cordate.look_up_array_clean 함수 테스트 메소드"""
+
+        self.instance.load_date_dictionary()
+
+        with self.assertRaises(TypeError):
+            self.instance.look_up_array_clean(int(self.date_1))
+
+        with self.assertRaises(ValueError):
+            self.instance.look_up_array_clean(self.err_str)
+
+        res = self.instance.look_up_array_clean(self.date_1)
+        self.assertTrue(res, List[str])
+        self.assertEqual(res[0], '19880416')
+
+
+    def test_cls_look_up_one_clean(self):
+        """cordate.look_up_one_clean 함수 테스트 메소드"""
+
+        self.instance.load_date_dictionary()
+        
+        with self.assertRaises(TypeError):
+            self.instance.look_up_one_clean(int(self.date_1))
+
+        with self.assertRaises(ValueError):
+            self.instance.look_up_one_clean(self.err_str)
+
+        res = self.instance.look_up_one_clean(self.date_1)
+        self.assertTrue(res, str)
+        self.assertEqual(res, '19880416')
 
 
     def test_cls_get_correct_array(self):
@@ -143,6 +185,9 @@ class TestClass(unittest.TestCase):
         
         with self.assertRaises(TypeError):
             self.instance.get_correct_array(int(self.date_1))
+
+        with self.assertRaises(ValueError):
+            self.instance.get_correct_array(self.err_str)
         
         res = self.instance.get_correct_array(self.date_1)
         self.assertTrue(res, List[str])
@@ -156,6 +201,9 @@ class TestClass(unittest.TestCase):
         
         with self.assertRaises(TypeError):
             self.instance.get_correct_array(int(self.date_1))
+
+        with self.assertRaises(ValueError):
+            self.instance.get_correct_array(self.err_str)
 
         res = self.instance.get_correct_one(self.date_1)
         self.assertTrue(res, str)
