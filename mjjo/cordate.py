@@ -1,3 +1,4 @@
+from curses.ascii import isalnum
 import pkg_resources
 from datetime import datetime
 from typing import (
@@ -91,6 +92,8 @@ class CorDate():
 
         if not isinstance(date, str):
             raise TypeError("type of object('date') must be string")
+        if not date.isdigit():
+            raise ValueError("object('date') should be a string consisting of numbers")
         if max_edit_distance is None:
             max_edit_distance = self.max_edit_distance
         if max_edit_distance > self.max_edit_distance:
@@ -100,8 +103,28 @@ class CorDate():
             Verbosity.ALL,
             max_edit_distance=max_edit_distance
         )
-        suggestions = list(_.term for _ in suggestions)
+        # suggestions = list(_.term for _ in suggestions)
         return suggestions
+
+
+    def look_up_array_clean(
+        self,
+        date : str,
+        max_edit_distance : Optional[int] = None,
+    ) -> List[str]:
+
+        """
+        look_up_array 결과값에서 term 리스트출력
+        """
+
+        suggestions = self.look_up_array(
+            date=date,
+            max_edit_distance=max_edit_distance
+        )
+        if suggestions \
+        and len(suggestions):
+            suggestions = list(_.term for _ in suggestions)
+            return suggestions
 
 
     def look_up_one(
@@ -116,6 +139,8 @@ class CorDate():
 
         if not isinstance(date, str):
             raise TypeError("type of object('date') must be string")
+        if not date.isdigit():
+            raise ValueError("object('date') should be a string consisting of numbers")
         if max_edit_distance is None:
             max_edit_distance = self.max_edit_distance
         if max_edit_distance > self.max_edit_distance:
@@ -127,10 +152,30 @@ class CorDate():
             max_edit_distance=max_edit_distance
         )
         if len(suggestions):
-            suggestion = suggestions[0].term
+            suggestion = suggestions[0]
             return suggestion
         else:
             return None
+
+
+    def look_up_one_clean(
+        self,
+        date : str,
+        max_edit_distance : Optional[int] = None,
+    ) -> Optional[str]:
+
+        """
+        look_up_one 결과값에서 term 출력
+        """
+
+        suggestion = self.look_up_one(
+            date=date,
+            max_edit_distance=max_edit_distance
+        )
+        if suggestion:
+            return suggestion.term
+        else:
+            return suggestion
 
 
 def _convert_type_year(y: str) -> int:
