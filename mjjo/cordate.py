@@ -48,11 +48,23 @@ class CorDate():
         입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜를 리스트로 생성함
         날짜 생성 규칙이란 연,월,일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지
         일반적으로 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지할 수 있음
+
+        Args:
+            date (str): The input date string to search for.
+
+        Raises:
+            TypeError: If the 'date' object is not of type string.
+            ValueError: If the 'date' object does not consist of digits only.
+
+        Returns:
+            List[str]: The closest value in the string of dates, or None if not found.
         """
 
         if not isinstance(date, str):
             raise TypeError("type of object must be string")
+
         dates = _check_correct_ymd(date, self.this_year)
+
         if _check_two_length_year(dates):
             dates = _get_four_length_year(dates, self.this_year_two_length)
         return dates
@@ -67,10 +79,21 @@ class CorDate():
         입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜 리스트중 가장 최신날짜를 출력
         날짜 생성 규칙이란 연,월,일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지
         일반적으로 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지할 수 있음
+
+        Args:
+            date (str): The input date string to search for.
+
+        Raises:
+            TypeError: If the 'date' object is not of type string.
+            ValueError: If the 'date' object does not consist of digits only.
+
+        Returns:
+            Optional[str]: The closest value in the string of dates, or None if not found.
         """
 
         if not isinstance(date, str):
             raise TypeError("type of object must be string")
+
         return _get_correct_date_from_dates(
             _check_correct_ymd(
                 date,
@@ -88,22 +111,36 @@ class CorDate():
 
         """
         연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 출력
+
+        Args:
+            date (str): The date string in the format 'yyyymmdd'.
+            max_edit_distance (Optional[int]): The maximum edit distance for spell correction. If not provided, defaults to self.max_edit_distance.
+
+        Raises:
+            TypeError: If the 'date' object is not of type string.
+            ValueError: If the 'date' object does not consist of digits only.
+
+        Returns:
+            List[str]: The closest date string from the date list, or None if not found.
         """
 
         if not isinstance(date, str):
             raise TypeError("type of object('date') must be string")
+
         if not date.isdigit():
             raise ValueError("object('date') should be a string consisting of numbers")
+
         if max_edit_distance is None:
             max_edit_distance = self.max_edit_distance
+
         if max_edit_distance > self.max_edit_distance:
             raise ValueError("distance too large")
+
         suggestions = self.sym_spell.lookup(
             date,
             Verbosity.ALL,
             max_edit_distance=max_edit_distance
         )
-        # suggestions = list(_.term for _ in suggestions)
         return suggestions
 
 
@@ -115,6 +152,17 @@ class CorDate():
 
         """
         look_up_array 결과값에서 term 리스트출력
+
+        Args:
+            date (str): The date string in the format 'yyyymmdd'.
+            max_edit_distance (Optional[int]): The maximum edit distance for spell correction. If not provided, defaults to self.max_edit_distance.
+
+        Raises:
+            TypeError: If the 'date' object is not of type string.
+            ValueError: If the 'date' object does not consist of digits only.
+
+        Returns:
+            List[str]: The closest date string from the date list, or None if not found.
         """
 
         suggestions = self.look_up_array(
@@ -124,6 +172,8 @@ class CorDate():
         if suggestions \
         and len(suggestions):
             suggestions = list(_.term for _ in suggestions)
+            return suggestions
+        else:
             return suggestions
 
 
@@ -135,17 +185,31 @@ class CorDate():
 
         """
         연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 중 가장 거리, 빈도 가까운 값 출력
+
+        Args:
+            date (str): The date string in the format 'yyyymmdd'.
+            max_edit_distance (Optional[int]): The maximum edit distance for spell correction. If not provided, defaults to self.max_edit_distance.
+
+        Raises:
+            TypeError: If the 'date' object is not of type string.
+            ValueError: If the 'date' object does not consist of digits only.
+
+        Returns:
+            Optional[str]: The closest date string from the date list, or None if not found.
         """
 
         if not isinstance(date, str):
             raise TypeError("type of object('date') must be string")
+
         if not date.isdigit():
             raise ValueError("object('date') should be a string consisting of numbers")
+
         if max_edit_distance is None:
             max_edit_distance = self.max_edit_distance
+
         if max_edit_distance > self.max_edit_distance:
             raise ValueError("distance too large")
-    
+
         suggestions = self.sym_spell.lookup(
             date,
             Verbosity.ALL,
@@ -166,6 +230,17 @@ class CorDate():
 
         """
         look_up_one 결과값에서 term 출력
+
+        Args:
+            date (str): The date string in the format 'yyyymmdd'.
+            max_edit_distance (Optional[int]): The maximum edit distance for spell correction. If not provided, defaults to self.max_edit_distance.
+
+        Raises:
+            TypeError: If the 'date' object is not of type string.
+            ValueError: If the 'date' object does not consist of digits only.
+
+        Returns:
+            Optional[str]: The closest date string from the date list, or None if not found.
         """
 
         suggestion = self.look_up_one(
@@ -290,13 +365,28 @@ def get_correct_array(
     입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜를 리스트로 생성함
     날짜 생성 규칙이란 연,월,일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지
     일반적으로 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지할 수 있음
+
+    Args:
+        date (str): The input date string to search for.
+
+    Raises:
+        TypeError: If the 'date' object is not of type string.
+        ValueError: If the 'date' object does not consist of digits only.
+
+    Returns:
+        List[str]: The closest value in the list of dates, or None if not found.
     """
 
     if not isinstance(date, str):
         raise TypeError("type of object must be string")
+
+    if not date.isdigit():
+        raise ValueError("object('date') should be a string consisting of numbers")
+
     this_year = datetime.now().year
     this_year_two_length = int(str(this_year)[2:])
     dates = _check_correct_ymd(date, this_year)
+
     if _check_two_length_year(dates):
         dates = _get_four_length_year(dates, this_year_two_length)
     return dates
@@ -310,10 +400,24 @@ def get_correct_one(
     입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜 리스트중 가장 최신날짜를 출력
     날짜 생성 규칙이란 연,월,일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지
     일반적으로 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지할 수 있음
+
+    Args:
+        date (str): The input date string to search for.
+
+    Raises:
+        TypeError: If the 'date' object is not of type string.
+        ValueError: If the 'date' object does not consist of digits only.
+
+    Returns:
+        Optional[str]: The closest value in the string of dates, or None if not found.
     """
 
     if not isinstance(date, str):
         raise TypeError("type of object must be string")
+
+    if not date.isdigit():
+        raise ValueError("object('date') should be a string consisting of numbers")
+
     this_year = datetime.now().year
     this_year_two_length = int(str(this_year)[2:])
     return _get_correct_date_from_dates(
