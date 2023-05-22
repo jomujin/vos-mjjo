@@ -1,4 +1,3 @@
-from curses.ascii import isalnum
 import pkg_resources
 from datetime import datetime
 from typing import (
@@ -63,6 +62,9 @@ class CorDate():
         if not isinstance(date, str):
             raise TypeError("type of object must be string")
 
+        if not date.isdigit():
+            raise ValueError("object('date') should be a string consisting of numbers")
+
         dates = _check_correct_ymd(date, self.this_year)
 
         if _check_two_length_year(dates):
@@ -93,6 +95,9 @@ class CorDate():
 
         if not isinstance(date, str):
             raise TypeError("type of object must be string")
+
+        if not date.isdigit():
+            raise ValueError("object('date') should be a string consisting of numbers")
 
         return _get_correct_date_from_dates(
             _check_correct_ymd(
