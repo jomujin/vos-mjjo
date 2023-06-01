@@ -2,7 +2,7 @@ vos-mjjo <br>
 [![PyPI version](https://badge.fury.io/py/vos-mjjo.svg)](https://pypi.org/project/vos-mjjo/)
 ========
 
-vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.10
+vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.11
 
 </br>
 
@@ -26,6 +26,11 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.
     -   Enhance method descriptions
     -   Add error handling based on method input conditions
     -   Add module tests
+
+### Update 0.0.11 - 2023.05
+
+-   Issue Update
+    -   By applying the zfill(8) method, the strftime method will generate a date string with 8 characters, ensuring that leading zeros are included for years below 1000
 
 </br>
 
