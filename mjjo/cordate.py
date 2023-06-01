@@ -289,7 +289,7 @@ def _check_correct_ymd(
                 y = _convert_type_year(y)
                 candidate_date = datetime(y, m, d)
                 if (y > 0) and (y < (this_year +1)) and candidate_date:
-                    candidate_date = candidate_date.strftime("%Y%m%d")
+                    candidate_date = candidate_date.strftime("%Y%m%d").zfill(8)
                     candidate_dates.add(candidate_date)
             except:
                 pass
