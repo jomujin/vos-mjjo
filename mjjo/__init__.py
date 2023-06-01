@@ -1,6 +1,6 @@
-version = '0.0.10' 
+version = '0.0.11' 
 author = 'mjjo'
-description = 'My Library'
+description = 'This library is designed to correct dates in building permit records'
 license = 'MIT'
 
 def __version__():
