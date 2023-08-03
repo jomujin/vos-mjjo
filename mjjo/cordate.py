@@ -16,7 +16,7 @@ class CorDate():
         self.sym_spell = SymSpell()
         self.dictionary_path = pkg_resources.resource_filename(
             "mjjo", 
-            "date_dictionary.txt"
+            "data/date_dictionary.txt"
         )
         self.this_year: int = datetime.now().year
         self.this_year_two_length: int = int(str(self.this_year)[2:])
