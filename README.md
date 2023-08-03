@@ -32,6 +32,11 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.
 -   Issue Update
     -   By applying the zfill(8) method, the strftime method will generate a date string with 8 characters, ensuring that leading zeros are included for years below 1000
 
+### Update 0.0.12 - 2023.08
+
+-   Version Update
+    -   Update the date dictionary to reflect the time reference of 2023.08
+
 </br>
 
 # Install
