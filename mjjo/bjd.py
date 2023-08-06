@@ -97,7 +97,7 @@ class Bjd():
         """
 
         if bjd_nm is not None:
-            return re.sub(r'[^0-9ㄱ-ㅎ가-힣]+', '', bjd_nm)
+            return re.sub(r'[^ 0-9ㄱ-ㅎ가-힣]+', '', bjd_nm)
         return ''
 
     def _get_full_bjd_nm(
@@ -155,3 +155,81 @@ class CurrentBjd(Bjd):
         """
 
         self.current_bjd_df = self.bjd_api_df.loc[self.bjd_api_df['삭제일자'].isnull()]
+
+@dataclass
+class ChangedBjd(Bjd):
+    
+    def __init__(self):
+        super().__init__()
+        self.changed_bjd_df = None
+
+    @staticmethod
+    def _create_gangwon_prev_bjd_cd(
+        sido_nm: str,
+        prev_bjd_cd: str,
+        bjd_cd: str
+    ):
+        if sido_nm == '강원특별자치도':
+            return f'42{bjd_cd[2:]}'
+        else:
+            return prev_bjd_cd
+
+    def _get_prev_bjd_nm(
+        self,
+        prev_bjd_cd: Optional[str]
+    ) -> str:
+        if prev_bjd_cd is None:
+            return None
+        if prev_bjd_cd not in self.bjd_api_dictionary.keys():
+            return None
+        try:
+            data = self.bjd_api_dictionary[prev_bjd_cd]
+            sido_nm = data['시도명']
+            sgg_nm = data['시군구명']
+            emd_nm = data['읍면동명']
+            ri_nm = data['리명']
+
+            return self._get_full_bjd_nm(
+                sido_nm,
+                sgg_nm,
+                emd_nm,
+                ri_nm
+            )
+        except:
+            return None
+
+    def _get_prev_value(
+        self,
+        prev_bjd_cd: Optional[str],
+        value_nm: str
+    ):
+        if prev_bjd_cd is None:
+            return None
+        if prev_bjd_cd not in self.bjd_api_dictionary.keys():
+            return None
+        try:
+            return self.bjd_api_dictionary[prev_bjd_cd][value_nm]
+        except:
+            return None
+
+    def _create_changed_bjd(self):
+        self.changed_bjd_df = self.bjd_api_df.copy()
+        self.changed_bjd_df['과거법정동코드'] = self.changed_bjd_df[['시도명', '과거법정동코드', '법정동코드']].apply(lambda x: self._create_gangwon_prev_bjd_cd(*x), axis=1)
+        self.changed_bjd_df = self.changed_bjd_df[[
+            '법정동코드',
+            '법정동명',
+            '생성일자',
+            '삭제일자',
+            '과거법정동코드'
+        ]]
+        self.changed_bjd_df = self.changed_bjd_df.loc[
+            (self.changed_bjd_df['생성일자'] != self.changed_bjd_df['삭제일자']) &
+            ~(self.changed_bjd_df['생성일자'] > self.changed_bjd_df['삭제일자'])
+        ]
+        self.changed_bjd_df = self.changed_bjd_df.loc[
+            (self.changed_bjd_df['과거법정동코드'].isnull()==False) &
+            (self.changed_bjd_df['과거법정동코드'].str.len() == 10)
+        ].sort_values('생성일자')
+        self.changed_bjd_df['과거법정동명'] = self.changed_bjd_df['과거법정동코드'].apply(lambda x: self._get_prev_bjd_nm(x))
+        self.changed_bjd_df['과거생성일자'] = self.changed_bjd_df['과거법정동코드'].apply(lambda x: self._get_prev_value(x, '생성일자'))
+        self.changed_bjd_df['과거삭제일자'] = self.changed_bjd_df['과거법정동코드'].apply(lambda x: self._get_prev_value(x, '삭제일자'))
