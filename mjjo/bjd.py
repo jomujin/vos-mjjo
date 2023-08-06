@@ -48,15 +48,15 @@ class Bjd():
                 print(f"Crawling... {self.api_base_url}{self.api_get_url}?page={api_page}&perPage={self.api_per_page}")
                 for data in json_datas['data']:
                     res_dic[f"{data['법정동코드']}"] = {
-                        '과거법정동코드': data['과거법정동코드'],
-                        '리명': data['리명'],
-                        '법정동코드': data['법정동코드'],
+                        '과거법정동코드': str(data['과거법정동코드']),
+                        '리명': str(data['리명']),
+                        '법정동코드': str(data['법정동코드']),
                         '삭제일자': data['삭제일자'],
                         '생성일자': data['생성일자'],
                         '순위': data['순위'],
-                        '시군구명': data['시군구명'],
-                        '시도명': data['시도명'],
-                        '읍면동명': data['읍면동명'],
+                        '시군구명': str(data['시군구명']),
+                        '시도명': str(data['시도명']),
+                        '읍면동명': str(data['읍면동명']),
                     }
                 api_page += 1
             else:
@@ -132,7 +132,26 @@ class Bjd():
         return res_df
     
     def _create_bjd(self):
+        """
+        국토교통부 전국 법정동 API 수집하여 딕셔너리와 데이터프레임으로 가공하는 기능
+        """
+
         res_dic = self._crawl_api()
         res_df = self._make_dataframe(res_dic)
         self.bjd_api_dictionary = res_dic
         self.bjd_api_df = res_df
+
+@dataclass
+class CurrentBjd(Bjd):
+    
+    def __init__(self):
+        super().__init__()
+        self.current_bjd_df = None
+        self._create_current_bjd()
+
+    def _create_current_bjd(self):
+        """
+        국토교통부 전국 법정동 API 현재 존재하는 법정동만 데이터프레임으로 가공하는 기능
+        """
+
+        self.current_bjd_df = self.bjd_api_df.loc[self.bjd_api_df['삭제일자'].isnull()]
