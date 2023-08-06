@@ -27,7 +27,6 @@ class Bjd():
         self.api_per_page = 1024
         self.bjd_api_dictionary = None
         self.bjd_api_df = None
-        self._create_bjd()
 
     @staticmethod
     def _request_api(api_url):
@@ -147,13 +146,14 @@ class CurrentBjd(Bjd):
     def __init__(self):
         super().__init__()
         self.current_bjd_df = None
-        self._create_current_bjd()
 
     def _create_current_bjd(self):
         """
         국토교통부 전국 법정동 API 현재 존재하는 법정동만 데이터프레임으로 가공하는 기능
         """
 
+        if self.bjd_api_df is None:
+            self._create_bjd()
         self.current_bjd_df = self.bjd_api_df.loc[self.bjd_api_df['삭제일자'].isnull()]
 
 @dataclass
@@ -213,6 +213,8 @@ class ChangedBjd(Bjd):
             return None
 
     def _create_changed_bjd(self):
+        if self.bjd_api_df is None:
+            self._create_bjd()
         self.changed_bjd_df = self.bjd_api_df.copy()
         self.changed_bjd_df['과거법정동코드'] = self.changed_bjd_df[['시도명', '과거법정동코드', '법정동코드']].apply(lambda x: self._create_gangwon_prev_bjd_cd(*x), axis=1)
         self.changed_bjd_df = self.changed_bjd_df[[
