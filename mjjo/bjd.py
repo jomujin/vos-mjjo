@@ -166,8 +166,8 @@ class ChangedBjd(Bjd):
     @staticmethod
     def _create_gangwon_prev_bjd_cd(
         sido_nm: str,
-        prev_bjd_cd: str,
-        bjd_cd: str
+        prev_bjd_cd: str, # 법정동코드_변경전
+        bjd_cd: str # 법정동코드_변경후
     ):
         if sido_nm == '강원특별자치도':
             return f'42{bjd_cd[2:]}'
@@ -176,7 +176,7 @@ class ChangedBjd(Bjd):
 
     def _get_prev_bjd_nm(
         self,
-        prev_bjd_cd: Optional[str]
+        prev_bjd_cd: Optional[str] # 법정동코드_변경전
     ) -> str:
         if prev_bjd_cd is None:
             return None
@@ -200,7 +200,7 @@ class ChangedBjd(Bjd):
 
     def _get_prev_value(
         self,
-        prev_bjd_cd: Optional[str],
+        prev_bjd_cd: Optional[str], # 법정동코드_변경전
         value_nm: str
     ):
         if prev_bjd_cd is None:
@@ -212,26 +212,66 @@ class ChangedBjd(Bjd):
         except:
             return None
 
+    @staticmethod
+    def _find_diff(
+        bjd_cd_curr: Optional[str], # 법정동코드_변경전
+        bjd_cd_prev: Optional[str], # 법정동코드_변경후
+        bjd_nm_curr: Optional[str], # 법정동명_변경전
+        bjd_nm_prev: Optional[str] # 법정동명_변경후
+    ) -> str:
+        bjd_cd_changed = ''
+        bjd_nm_changed = ''
+        if bjd_cd_prev and bjd_cd_curr:
+            if bjd_cd_prev != bjd_cd_curr:
+                bjd_cd_changed = f'{bjd_cd_curr} > {bjd_cd_curr}'
+        if bjd_nm_prev and bjd_nm_curr:
+            changed_list_curr = list()
+            changed_list_prev = list()
+            for w1, w2 in zip(bjd_nm_prev.split(), bjd_nm_curr.split()):
+                if w1 != w2:
+                    changed_list_prev.append(w1)
+                    changed_list_curr.append(w2)
+            bjd_nm_changed = f"{' '.join(changed_list_prev)} > {' '.join(changed_list_curr)}"
+        return f'[법정동코드 변경내역] {bjd_cd_changed} | [법정동명 변경내역]: {bjd_nm_changed}'
+
     def _create_changed_bjd(self):
         if self.bjd_api_df is None:
             self._create_bjd()
         self.changed_bjd_df = self.bjd_api_df.copy()
-        self.changed_bjd_df['과거법정동코드'] = self.changed_bjd_df[['시도명', '과거법정동코드', '법정동코드']].apply(lambda x: self._create_gangwon_prev_bjd_cd(*x), axis=1)
+        self.changed_bjd_df = self.changed_bjd_df.rename(columns={
+            '법정동코드': '법정동코드_변경후',
+            '법정동명': '법정동명_변경후',
+            '생성일자': '생성일자_변경후',
+            '삭제일자': '삭제일자_변경후',
+            '과거법정동코드': '법정동코드_변경전',
+        })
+        self.changed_bjd_df['법정동코드_변경전'] = self.changed_bjd_df[[
+            '시도명',
+            '법정동코드_변경전',
+            '법정동코드_변경후'
+        ]].apply(lambda x: self._create_gangwon_prev_bjd_cd(*x), axis=1)
         self.changed_bjd_df = self.changed_bjd_df[[
-            '법정동코드',
-            '법정동명',
-            '생성일자',
-            '삭제일자',
-            '과거법정동코드'
+            '법정동코드_변경후',
+            '법정동명_변경후',
+            '생성일자_변경후',
+            '삭제일자_변경후',
+            '법정동코드_변경전'
         ]]
         self.changed_bjd_df = self.changed_bjd_df.loc[
-            (self.changed_bjd_df['생성일자'] != self.changed_bjd_df['삭제일자']) &
-            ~(self.changed_bjd_df['생성일자'] > self.changed_bjd_df['삭제일자'])
+            (self.changed_bjd_df['생성일자_변경후'] != self.changed_bjd_df['삭제일자_변경후']) &
+            ~(self.changed_bjd_df['생성일자_변경후'] > self.changed_bjd_df['삭제일자_변경후'])
         ]
         self.changed_bjd_df = self.changed_bjd_df.loc[
-            (self.changed_bjd_df['과거법정동코드'].isnull()==False) &
-            (self.changed_bjd_df['과거법정동코드'].str.len() == 10)
-        ].sort_values('생성일자')
-        self.changed_bjd_df['과거법정동명'] = self.changed_bjd_df['과거법정동코드'].apply(lambda x: self._get_prev_bjd_nm(x))
-        self.changed_bjd_df['과거생성일자'] = self.changed_bjd_df['과거법정동코드'].apply(lambda x: self._get_prev_value(x, '생성일자'))
-        self.changed_bjd_df['과거삭제일자'] = self.changed_bjd_df['과거법정동코드'].apply(lambda x: self._get_prev_value(x, '삭제일자'))
+            (self.changed_bjd_df['법정동코드_변경전'].isnull()==False) &
+            (self.changed_bjd_df['법정동코드_변경전'].str.len() == 10)
+        ].sort_values('생성일자_변경후')
+        self.changed_bjd_df['법정동명_변경전'] = self.changed_bjd_df['법정동코드_변경전'].apply(lambda x: self._get_prev_bjd_nm(x))
+        self.changed_bjd_df['생성일자_변경전'] = self.changed_bjd_df['법정동코드_변경전'].apply(lambda x: self._get_prev_value(x, '생성일자'))
+        self.changed_bjd_df['삭제일자_변경전'] = self.changed_bjd_df['법정동코드_변경전'].apply(lambda x: self._get_prev_value(x, '삭제일자'))
+
+        self.changed_bjd_df['변경내역'] = self.changed_bjd_df[[
+            '법정동코드_변경전', 
+            '법정동코드_변경후',
+            '법정동명_변경전',
+            '법정동명_변경후'
+        ]].apply(lambda x: self._find_diff(*x), axis=1)
