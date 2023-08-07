@@ -11,6 +11,7 @@ from typing import (
 import requests
 import pandas as pd
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 from dotenv import load_dotenv
 from dataclasses import dataclass
 
@@ -317,17 +318,17 @@ class ChangedBjd(Bjd):
         )
 
 @dataclass
-class SmallestBjd(Bjd):
+class SmallestBjd(CurrentBjd):
 
     def __init__(self):
         super().__init__()
         self.smallest_bjd_list: List[str] = None
 
     def _create_smallest_bjd(self):
-        if self.bjd_api_df is None:
-            self._create_bjd()
+        if self.current_bjd_df is None:
+            self._create_current_bjd()
         smallest_bjd_set = set()
-        for bjd in self.bjd_api_df['법정동명']:
+        for bjd in self.current_bjd_df['법정동명']:
             if bjd[-1] in ['가', '동', '로', '리']:
                 smallest_bjd_set.add(bjd.split(' ')[-1])
 
@@ -338,3 +339,35 @@ class SmallestBjd(Bjd):
             self._create_smallest_bjd()
         with open(self.file_name_bjd_smallest, 'w') as f:
             f.writelines('\n'.join(self.smallest_bjd_list))
+
+@dataclass
+class BjdFrequencyDictionary(CurrentBjd):
+
+    def __init__(self):
+        super().__init__()
+        self.bjd_frequency_dictionary: Dict[str, int] = None
+        
+    def _create_bjd_frequency_dictionary(self):
+        if self.current_bjd_df is None:
+            self._create_current_bjd()
+        self.bjd_frequency_dictionary = defaultdict(int)
+        for bjd in self.current_bjd_df['법정동명']:
+            bjd_words = bjd.split(' ')
+            for word in bjd_words:
+                self.bjd_frequency_dictionary[word] += 1
+
+    def _save_bjd_frequency_dictionary(self):
+        if self.bjd_frequency_dictionary is None:
+            self._create_bjd_frequency_dictionary()
+        bjd_frequency_list = list((key, value) for key, value in self.bjd_frequency_dictionary.items())
+        with open(self.file_name_bjd_frequency_dictionary, 'w') as f:
+            vstr = ''
+            sep = ','
+            for line in bjd_frequency_list:
+                for s in line:
+                    vstr = vstr + str(s) + sep
+                vstr = vstr.rstrip(sep)  # 마지막에도 추가되는  sep을 삭제 
+                vstr = vstr + '\n'
+            
+            f.writelines(vstr)  # 한 라인씩 저장 
+            f.close()
