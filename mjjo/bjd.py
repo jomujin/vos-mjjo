@@ -5,6 +5,7 @@ import json
 from typing import (
     List,
     Dict,
+    Literal,
     Optional
 )
 import requests
@@ -20,13 +21,16 @@ class Bjd():
 
     def __init__(self):
         load_dotenv()
-        self.api_base_url = "https://api.odcloud.kr/api"
-        self.api_get_url = "/15063424/v1/uddi:257e1510-0eeb-44de-8883-8295c94dadf7" # https://www.data.go.kr/data/15063424/fileData.do#layer-api-guide API 목록 중 국토교통부_전국 법정동_20230710 GET
-        self.api_key = os.environ['BJD_API_KEY']
-        self.api_page = 0
-        self.api_per_page = 1024
-        self.bjd_api_dictionary = None
-        self.bjd_api_df = None
+        self.api_base_url: str = "https://api.odcloud.kr/api"
+        self.api_get_url: str = "/15063424/v1/uddi:257e1510-0eeb-44de-8883-8295c94dadf7" # https://www.data.go.kr/data/15063424/fileData.do#layer-api-guide API 목록 중 국토교통부_전국 법정동_20230710 GET
+        self.api_key: str = os.environ['BJD_API_KEY']
+        self.api_page: int = 0
+        self.api_per_page: int = 1024
+        self.bjd_api_dictionary: Dict[str, Dict[str, str]] = None
+        self.bjd_api_df: pd.DataFrame = None
+        self.output_sep: Literal['\t'] = '\t'
+        self.output_encoding: str = 'utf-8'
+        self.output_index: bool = False
 
     @staticmethod
     def _request_api(api_url):
@@ -46,7 +50,7 @@ class Bjd():
             if json_datas['data']:
                 print(f"Crawling... {self.api_base_url}{self.api_get_url}?page={api_page}&perPage={self.api_per_page}")
                 for data in json_datas['data']:
-                    res_dic[f"{data['법정동코드']}"] = {
+                    res_dic[f"{str(data['법정동코드'])}"] = {
                         '과거법정동코드': str(data['과거법정동코드']),
                         '리명': str(data['리명']),
                         '법정동코드': str(data['법정동코드']),
@@ -145,7 +149,7 @@ class CurrentBjd(Bjd):
     
     def __init__(self):
         super().__init__()
-        self.current_bjd_df = None
+        self.current_bjd_df: pd.DataFrame = None
 
     def _create_current_bjd(self):
         """
@@ -161,7 +165,7 @@ class ChangedBjd(Bjd):
     
     def __init__(self):
         super().__init__()
-        self.changed_bjd_df = None
+        self.changed_bjd_df: pd.DataFrame = None
 
     @staticmethod
     def _create_gangwon_prev_bjd_cd(
