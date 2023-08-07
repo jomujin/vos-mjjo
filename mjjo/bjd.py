@@ -57,15 +57,15 @@ class Bjd():
                 print(f"Crawling... {self.api_base_url}{self.api_get_url}?page={api_page}&perPage={self.api_per_page}")
                 for data in json_datas['data']:
                     res_dic[f"{str(data['법정동코드'])}"] = {
-                        '과거법정동코드': str(data['과거법정동코드']),
-                        '리명': str(data['리명']),
-                        '법정동코드': str(data['법정동코드']),
+                        '과거법정동코드': str(data['과거법정동코드']) if data['과거법정동코드'] is not None else None,
+                        '리명': str(data['리명']) if data['리명'] is not None else None,
+                        '법정동코드': str(data['법정동코드']) if data['법정동코드'] is not None else None,
                         '삭제일자': data['삭제일자'],
                         '생성일자': data['생성일자'],
                         '순위': data['순위'],
-                        '시군구명': str(data['시군구명']),
-                        '시도명': str(data['시도명']),
-                        '읍면동명': str(data['읍면동명']),
+                        '시군구명': str(data['시군구명']) if data['시군구명'] is not None else None,
+                        '시도명': str(data['시도명']) if data['시도명'] is not None else None,
+                        '읍면동명': str(data['읍면동명']) if data['읍면동명'] is not None else None,
                     }
                 api_page += 1
             else:
