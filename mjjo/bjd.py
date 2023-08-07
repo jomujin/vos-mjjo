@@ -162,7 +162,7 @@ class Bjd():
 
 @dataclass
 class CurrentBjd(Bjd):
-    
+
     def __init__(self):
         super().__init__()
         self.current_bjd_df: pd.DataFrame = None
@@ -188,7 +188,7 @@ class CurrentBjd(Bjd):
 
 @dataclass
 class ChangedBjd(Bjd):
-    
+
     def __init__(self):
         super().__init__()
         self.changed_bjd_df: pd.DataFrame = None
@@ -315,3 +315,26 @@ class ChangedBjd(Bjd):
             sep=self.output_sep,
             index=self.output_index
         )
+
+@dataclass
+class SmallestBjd(Bjd):
+
+    def __init__(self):
+        super().__init__()
+        self.smallest_bjd_list: List[str] = None
+
+    def _create_smallest_bjd(self):
+        if self.bjd_api_df is None:
+            self._create_bjd()
+        smallest_bjd_set = set()
+        for bjd in self.bjd_api_df['법정동명']:
+            if bjd[-1] in ['가', '동', '로', '리']:
+                smallest_bjd_set.add(bjd.split(' ')[-1])
+
+        self.smallest_bjd_list = sorted(list(smallest_bjd_set))
+
+    def _save_smallest_bjd(self):
+        if self.smallest_bjd_list is None:
+            self._create_smallest_bjd()
+        with open(self.file_name_bjd_smallest, 'w') as f:
+            f.writelines('\n'.join(self.smallest_bjd_list))
