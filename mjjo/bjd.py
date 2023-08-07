@@ -31,6 +31,12 @@ class Bjd():
         self.output_sep: Literal['\t'] = '\t'
         self.output_encoding: str = 'utf-8'
         self.output_index: bool = False
+        self.file_path: str = f'{os.getcwd()}/mjjo/data'
+        self.file_name_bjd: str = f'{self.file_path}/bjd.txt'
+        self.file_name_bjd_current: str = f'{self.file_path}/bjd_current.txt'
+        self.file_name_bjd_changed: str = f'{self.file_path}/bjd_changed.txt'
+        self.file_name_bjd_smallest: str = f'{self.file_path}/bjd_smallest.txt'
+        self.file_name_bjd_frequency_dictionary: str = f'{self.file_path}/bjd_frequency_dictionary.txt'
 
     @staticmethod
     def _request_api(api_url):
@@ -144,6 +150,16 @@ class Bjd():
         self.bjd_api_dictionary = res_dic
         self.bjd_api_df = res_df
 
+    def _save_bjd(self):
+        if self.bjd_api_df is None:
+            self._create_bjd()
+        self.bjd_api_df.to_csv(
+            self.file_name_bjd,
+            encoding=self.output_encoding,
+            sep=self.output_sep,
+            index=self.output_index
+        )
+
 @dataclass
 class CurrentBjd(Bjd):
     
@@ -159,6 +175,16 @@ class CurrentBjd(Bjd):
         if self.bjd_api_df is None:
             self._create_bjd()
         self.current_bjd_df = self.bjd_api_df.loc[self.bjd_api_df['삭제일자'].isnull()]
+
+    def _save_current_bjd(self):
+        if self.current_bjd_df is None:
+            self._create_current_bjd()
+        self.current_bjd_df.to_csv(
+            self.file_name_bjd_current,
+            encoding=self.output_encoding,
+            sep=self.output_sep,
+            index=self.output_index
+        )
 
 @dataclass
 class ChangedBjd(Bjd):
@@ -279,3 +305,13 @@ class ChangedBjd(Bjd):
             '법정동명_변경전',
             '법정동명_변경후'
         ]].apply(lambda x: self._find_diff(*x), axis=1)
+        
+    def _save_changed_bjd(self):
+        if self.changed_bjd_df is None:
+            self._create_changed_bjd()
+        self.changed_bjd_df.to_csv(
+            self.file_name_bjd_changed,
+            encoding=self.output_encoding,
+            sep=self.output_sep,
+            index=self.output_index
+        )
