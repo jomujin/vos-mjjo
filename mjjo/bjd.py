@@ -57,7 +57,7 @@ class Bjd():
             response = self._request_api(api_url)
             json_datas = self._convert_json(response)
             if json_datas['data']:
-                print(f"Crawling... {self.api_base_url}{self.api_get_url}?page={api_page}&perPage={self.api_per_page}")
+                self.logger.info(f"Crawling... {self.api_base_url}{self.api_get_url}?page={api_page}&perPage={self.api_per_page}")
                 for data in json_datas['data']:
                     res_dic[f"{str(data['법정동코드'])}"] = {
                         '과거법정동코드': str(data['과거법정동코드']) if data['과거법정동코드'] is not None else None,
@@ -153,6 +153,7 @@ class Bjd():
         res_df = self._make_dataframe(res_dic)
         self.bjd_api_dictionary = res_dic
         self.bjd_api_df = res_df
+        self.logger.info("Success Created Bjd Dataframe and Dictionary from Public Data API")
 
     def _save_bjd(self):
         if self.bjd_api_df is None:
@@ -163,6 +164,7 @@ class Bjd():
             sep=self.output_sep,
             index=self.output_index
         )
+        self.logger.info("Success Saved Bjd Dataframe To Text File")
 
 @dataclass
 class CurrentBjd(Bjd):
@@ -179,6 +181,7 @@ class CurrentBjd(Bjd):
         if self.bjd_api_df is None:
             self._create_bjd()
         self.current_bjd_df = self.bjd_api_df.loc[self.bjd_api_df['삭제일자'].isnull()]
+        self.logger.info("Success Created Current Bjd Dataframe")
 
     def _save_current_bjd(self):
         if self.current_bjd_df is None:
@@ -189,6 +192,7 @@ class CurrentBjd(Bjd):
             sep=self.output_sep,
             index=self.output_index
         )
+        self.logger.info("Success Saved Current Bjd Dataframe To Text File")
 
 @dataclass
 class ChangedBjd(Bjd):
@@ -309,6 +313,7 @@ class ChangedBjd(Bjd):
             '법정동명_변경전',
             '법정동명_변경후'
         ]].apply(lambda x: self._find_diff(*x), axis=1)
+        self.logger.info("Success Created Changed Bjd Dataframe")
         
     def _save_changed_bjd(self):
         if self.changed_bjd_df is None:
@@ -319,6 +324,7 @@ class ChangedBjd(Bjd):
             sep=self.output_sep,
             index=self.output_index
         )
+        self.logger.info("Success Saved Changed Bjd Dataframe To Text File")
 
 @dataclass
 class SmallestBjd(CurrentBjd):
@@ -336,12 +342,15 @@ class SmallestBjd(CurrentBjd):
                 smallest_bjd_set.add(bjd.split(' ')[-1])
 
         self.smallest_bjd_list = sorted(list(smallest_bjd_set))
+        self.logger.info("Success Created Smallest Bjd Name List")
 
     def _save_smallest_bjd(self):
         if self.smallest_bjd_list is None:
             self._create_smallest_bjd()
         with open(self.file_name_bjd_smallest, 'w') as f:
             f.writelines('\n'.join(self.smallest_bjd_list))
+            f.close()
+        self.logger.info("Success Saved Changed Smallest Bjd Name List To Text File")
 
 @dataclass
 class BjdFrequencyDictionary(CurrentBjd):
@@ -359,6 +368,8 @@ class BjdFrequencyDictionary(CurrentBjd):
             for word in bjd_words:
                 self.bjd_frequency_dictionary[word] += 1
 
+        self.logger.info("Success Created Bjd Frequency Dictionary")
+
     def _save_bjd_frequency_dictionary(self):
         if self.bjd_frequency_dictionary is None:
             self._create_bjd_frequency_dictionary()
@@ -374,6 +385,7 @@ class BjdFrequencyDictionary(CurrentBjd):
             
             f.writelines(vstr)  # 한 라인씩 저장 
             f.close()
+        self.logger.info("Success Saved Bjd Frequency Dictionary To Text File")
 
 @dataclass
 class AllBjdJob(Bjd):
