@@ -2,8 +2,9 @@ import re
 import pkg_resources
 import pandas as pd
 from typing import (
-    Optional,
-    List
+    List,
+    Dict,
+    Optional
 )
 from dataclasses import dataclass
 from mjjo.bjd import Bjd
@@ -19,18 +20,18 @@ class ConvAddr():
 
     def _prepare(self):
         cls_bjd = Bjd()
-        file_name_bjd = cls_bjd.file_name_bjd
-        file_name_bjd_current = cls_bjd.file_name_bjd_current
-        file_name_bjd_changed = cls_bjd.file_name_bjd_changed
-        file_name_bjd_smallest = cls_bjd.file_name_bjd_smallest
-        file_name_bjd_frequency_dictionary = cls_bjd.file_name_bjd_frequency_dictionary
+        file_name_bjd: str = cls_bjd.file_name_bjd
+        file_name_bjd_current: str = cls_bjd.file_name_bjd_current
+        file_name_bjd_changed: str = cls_bjd.file_name_bjd_changed
+        file_name_bjd_smallest: str = cls_bjd.file_name_bjd_smallest
+        file_name_bjd_frequency_dictionary: str = cls_bjd.file_name_bjd_frequency_dictionary
 
-        self.bjd_current_dic = dict((line.split('\t')[2], line.split('\t')[9].replace('\n', '')) for line in open(file_name_bjd_current, 'r'))
-        self.bjd_smallest = [(line.strip()) for line in open(file_name_bjd_smallest, 'r')]
-        bjd_changed_df = pd.read_csv(file_name_bjd_changed, sep='\t', engine='python', encoding='utf-8')
-        old_bjd_nm_list = list(bjd_changed_df['법정동명_변경전'])
-        new_bjd_nm_list = list(bjd_changed_df['법정동명_변경후'])
-        self.bjd_changed_dic = dict((oldnm, newnm) for oldnm, newnm in zip(old_bjd_nm_list, new_bjd_nm_list))
+        self.bjd_current_dic: Dict[str, str] = dict((line.split('\t')[2], line.split('\t')[9].replace('\n', '')) for line in open(file_name_bjd_current, 'r'))
+        self.bjd_smallest_list: List[str] = [(line.strip()) for line in open(file_name_bjd_smallest, 'r')]
+        bjd_changed_df: pd.DataFrame = pd.read_csv(file_name_bjd_changed, sep='\t', engine='python', encoding='utf-8')
+        old_bjd_nm_list: List[str] = list(bjd_changed_df['법정동명_변경전'])
+        new_bjd_nm_list: List[str] = list(bjd_changed_df['법정동명_변경후'])
+        self.bjd_changed_dic: Dict[str, str] = dict((oldnm, newnm) for oldnm, newnm in zip(old_bjd_nm_list, new_bjd_nm_list))
 
     @staticmethod
     def correct_simple_spacing(
