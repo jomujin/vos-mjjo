@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 from collections import defaultdict
 from dotenv import load_dotenv
 from dataclasses import dataclass
+from mjjo import Log
 
 
 @dataclass
@@ -38,6 +39,7 @@ class Bjd():
         self.file_name_bjd_changed: str = f'{self.file_path}/bjd_changed.txt'
         self.file_name_bjd_smallest: str = f'{self.file_path}/bjd_smallest.txt'
         self.file_name_bjd_frequency_dictionary: str = f'{self.file_path}/bjd_frequency_dictionary.txt'
+        self.logger = Log('Bjd').stream_handler("INFO")
 
     @staticmethod
     def _request_api(api_url):
