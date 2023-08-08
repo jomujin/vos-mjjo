@@ -414,3 +414,9 @@ class AllBjdJob(Bjd):
         bjd_frequency_dictionary.bjd_api_dictionary = self.bjd_api_dictionary
         bjd_frequency_dictionary.current_bjd_df = current_bjd.current_bjd_df
         bjd_frequency_dictionary._create_bjd_frequency_dictionary()
+
+        self._save_bjd()
+        current_bjd._save_current_bjd()
+        changed_bjd._save_changed_bjd()
+        smallest_bjd._save_smallest_bjd()
+        bjd_frequency_dictionary._save_bjd_frequency_dictionary()
