@@ -400,13 +400,17 @@ class AllBjdJob(Bjd):
         bjd_frequency_dictionary = BjdFrequencyDictionary()
 
         current_bjd.bjd_api_df = self.bjd_api_df
+        current_bjd.bjd_api_dictionary = self.bjd_api_dictionary
         current_bjd._create_current_bjd()
         changed_bjd.bjd_api_df = self.bjd_api_df
+        changed_bjd.bjd_api_dictionary = self.bjd_api_dictionary
         changed_bjd._create_changed_bjd()
         
         smallest_bjd.bjd_api_df = self.bjd_api_df
+        smallest_bjd.bjd_api_dictionary = self.bjd_api_dictionary
         smallest_bjd.current_bjd_df = current_bjd.current_bjd_df
         smallest_bjd._create_smallest_bjd()
         bjd_frequency_dictionary.bjd_api_df = self.bjd_api_df
+        bjd_frequency_dictionary.bjd_api_dictionary = self.bjd_api_dictionary
         bjd_frequency_dictionary.current_bjd_df = current_bjd.current_bjd_df
         bjd_frequency_dictionary._create_bjd_frequency_dictionary()
