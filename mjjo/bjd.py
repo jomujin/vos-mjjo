@@ -122,7 +122,7 @@ class Bjd():
         """
 
         sido_nm = self._clean_bjd_nm(sido_nm)
-        sgg_nm = self._clean_bjd_nm(self._split_sgg_nm(sgg_nm))
+        sgg_nm = self._clean_bjd_nm(sgg_nm)
         emd_nm = self._clean_bjd_nm(emd_nm)
         ri_nm = self._clean_bjd_nm(ri_nm)
 
@@ -133,6 +133,7 @@ class Bjd():
 
     def _make_dataframe(self, res_dic) -> pd.DataFrame:
         res_df = pd.DataFrame(res_dic).T.sort_values('법정동코드').reset_index().drop(columns='index').replace(0, None).replace('0', None)
+        res_df['시군구명'] = res_df['시군구명'].apply(lambda x: self._split_sgg_nm(x))
         res_df['법정동명'] = res_df[[
             '시도명',
             '시군구명',
@@ -371,3 +372,27 @@ class BjdFrequencyDictionary(CurrentBjd):
             
             f.writelines(vstr)  # 한 라인씩 저장 
             f.close()
+
+@dataclass
+class AllBjdJob(Bjd):
+
+    def __init__(self):
+        super().__init__()
+        self._create_bjd()
+
+        current_bjd = CurrentBjd()
+        changed_bjd = ChangedBjd()
+        smallest_bjd = SmallestBjd()
+        bjd_frequency_dictionary = BjdFrequencyDictionary()
+
+        current_bjd.bjd_api_df = self.bjd_api_df
+        current_bjd._create_current_bjd()
+        changed_bjd.bjd_api_df = self.bjd_api_df
+        changed_bjd._create_changed_bjd()
+        
+        smallest_bjd.bjd_api_df = self.bjd_api_df
+        smallest_bjd.current_bjd_df = current_bjd.current_bjd_df
+        smallest_bjd._create_smallest_bjd()
+        bjd_frequency_dictionary.bjd_api_df = self.bjd_api_df
+        bjd_frequency_dictionary.current_bjd_df = current_bjd.current_bjd_df
+        bjd_frequency_dictionary._create_bjd_frequency_dictionary()
