@@ -165,6 +165,44 @@ class Bjd():
             index=self.output_index
         )
         self.logger.info("Success Saved Bjd Dataframe To Text File")
+        
+    def _do_all_bjd_job(self):
+        """
+        국토교통부 전국 법정동 API 수집하여 법정동 관련 파일을 모두 생성하는 기능
+        - bjd.txt
+        - bjd_current.txt
+        - bjd_changed.txt
+        - bjd_smallest.txt
+        - bjd_frequency_dictionary.txt
+        """
+
+        self._create_bjd()
+        current_bjd = CurrentBjd()
+        changed_bjd = ChangedBjd()
+        smallest_bjd = SmallestBjd()
+        bjd_frequency_dictionary = BjdFrequencyDictionary()
+
+        current_bjd.bjd_api_df = self.bjd_api_df
+        current_bjd.bjd_api_dictionary = self.bjd_api_dictionary
+        current_bjd._create_current_bjd()
+        changed_bjd.bjd_api_df = self.bjd_api_df
+        changed_bjd.bjd_api_dictionary = self.bjd_api_dictionary
+        changed_bjd._create_changed_bjd()
+        
+        smallest_bjd.bjd_api_df = self.bjd_api_df
+        smallest_bjd.bjd_api_dictionary = self.bjd_api_dictionary
+        smallest_bjd.current_bjd_df = current_bjd.current_bjd_df
+        smallest_bjd._create_smallest_bjd()
+        bjd_frequency_dictionary.bjd_api_df = self.bjd_api_df
+        bjd_frequency_dictionary.bjd_api_dictionary = self.bjd_api_dictionary
+        bjd_frequency_dictionary.current_bjd_df = current_bjd.current_bjd_df
+        bjd_frequency_dictionary._create_bjd_frequency_dictionary()
+
+        self._save_bjd()
+        current_bjd._save_current_bjd()
+        changed_bjd._save_changed_bjd()
+        smallest_bjd._save_smallest_bjd()
+        bjd_frequency_dictionary._save_bjd_frequency_dictionary()
 
 @dataclass
 class CurrentBjd(Bjd):
@@ -386,37 +424,3 @@ class BjdFrequencyDictionary(CurrentBjd):
             f.writelines(vstr)  # 한 라인씩 저장 
             f.close()
         self.logger.info("Success Saved Bjd Frequency Dictionary To Text File")
-
-@dataclass
-class AllBjdJob(Bjd):
-
-    def __init__(self):
-        super().__init__()
-        self._create_bjd()
-
-        current_bjd = CurrentBjd()
-        changed_bjd = ChangedBjd()
-        smallest_bjd = SmallestBjd()
-        bjd_frequency_dictionary = BjdFrequencyDictionary()
-
-        current_bjd.bjd_api_df = self.bjd_api_df
-        current_bjd.bjd_api_dictionary = self.bjd_api_dictionary
-        current_bjd._create_current_bjd()
-        changed_bjd.bjd_api_df = self.bjd_api_df
-        changed_bjd.bjd_api_dictionary = self.bjd_api_dictionary
-        changed_bjd._create_changed_bjd()
-        
-        smallest_bjd.bjd_api_df = self.bjd_api_df
-        smallest_bjd.bjd_api_dictionary = self.bjd_api_dictionary
-        smallest_bjd.current_bjd_df = current_bjd.current_bjd_df
-        smallest_bjd._create_smallest_bjd()
-        bjd_frequency_dictionary.bjd_api_df = self.bjd_api_df
-        bjd_frequency_dictionary.bjd_api_dictionary = self.bjd_api_dictionary
-        bjd_frequency_dictionary.current_bjd_df = current_bjd.current_bjd_df
-        bjd_frequency_dictionary._create_bjd_frequency_dictionary()
-
-        self._save_bjd()
-        current_bjd._save_current_bjd()
-        changed_bjd._save_changed_bjd()
-        smallest_bjd._save_smallest_bjd()
-        bjd_frequency_dictionary._save_bjd_frequency_dictionary()
