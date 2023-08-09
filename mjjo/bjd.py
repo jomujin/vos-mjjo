@@ -305,7 +305,7 @@ class ChangedBjd(Bjd):
         bjd_nm_changed = ''
         if bjd_cd_prev and bjd_cd_curr:
             if bjd_cd_prev != bjd_cd_curr:
-                bjd_cd_changed = f'{bjd_cd_curr} > {bjd_cd_curr}'
+                bjd_cd_changed = f'{bjd_cd_prev} > {bjd_cd_curr}'
         if bjd_nm_prev and bjd_nm_curr:
             changed_list_prev = list()
             changed_list_curr = list()
