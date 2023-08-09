@@ -56,11 +56,16 @@ class ConvAddr():
         bjd_changed_df
     ):
         bjd_changed_dictionary: Dict[str, str] = dict()
-        for old_bjd_nm, new_bjd_nm in zip(bjd_changed_df['법정동명_변경전'], bjd_changed_df['법정동명_변경후']):
+        for old_bjd_cd, old_bjd_nm, new_bjd_nm in zip(
+            bjd_changed_df['법정동코드_변경전'],
+            bjd_changed_df['법정동명_변경전'],
+            bjd_changed_df['법정동명_변경후']
+        ):
             if old_bjd_nm is not None \
             and new_bjd_nm is not None \
             and old_bjd_nm != new_bjd_nm \
-            and old_bjd_nm not in self.bjd_current_bjd_nm_list:
+            and old_bjd_nm not in self.bjd_current_bjd_nm_list \
+            and str(old_bjd_cd)[5:] != '00000': # 시도, 시군구는 제외
                 bjd_changed_dictionary[old_bjd_nm] = new_bjd_nm
         return bjd_changed_dictionary
 
