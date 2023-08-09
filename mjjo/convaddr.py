@@ -1,4 +1,5 @@
 import re
+import math
 import pkg_resources
 import pandas as pd
 from typing import (
@@ -50,13 +51,16 @@ class ConvAddr():
         else:
             return None
 
-    @staticmethod
-    def _create_bjd_changed_dictionary(bjd_changed_df):
+    def _create_bjd_changed_dictionary(
+        self,
+        bjd_changed_df
+    ):
         bjd_changed_dictionary: Dict[str, str] = dict()
         for old_bjd_nm, new_bjd_nm in zip(bjd_changed_df['법정동명_변경전'], bjd_changed_df['법정동명_변경후']):
             if old_bjd_nm is not None \
             and new_bjd_nm is not None \
-            and old_bjd_nm != new_bjd_nm:
+            and old_bjd_nm != new_bjd_nm \
+            and old_bjd_nm not in self.bjd_current_bjd_nm_list:
                 bjd_changed_dictionary[old_bjd_nm] = new_bjd_nm
         return bjd_changed_dictionary
 
@@ -79,6 +83,7 @@ class ConvAddr():
             sep=input_sep,
             engine='python',
             encoding=input_encoding)
+        self.bjd_current_bjd_nm_list: List[str] = list(bjd_nm for bjd_nm in self.bjd_current_df['법정동명'] if bjd_nm is not None)
         self.bjd_current_df['시도시군구명'] = self.bjd_current_df[['시도명', '시군구명']].apply(lambda x: self._concat_sido_sgg(*x), axis=1)
         self.current_sido_sgg_list: List[str] = list(self.bjd_current_df['시도시군구명'].unique())
         self.current_sido_list: List[str] = list(self.bjd_current_df['시도명'].unique())
@@ -91,8 +96,12 @@ class ConvAddr():
             sep=input_sep,
             engine='python',
             encoding=input_encoding)
-        self.bjd_changed_old_bjd_nm_list: List[str] = list(old_nm for old_nm in self.bjd_current_df['법정동명_변경전'] if old_nm is not None)
-        self.bjd_changed_dic: Dict[str, str] = self._create_bjd_changed_dictionary(self.bjd_changed_df)
+        sub_bjd_changed_df = self.bjd_changed_df.loc[
+            (self.bjd_changed_df['법정동명_변경후'].isnull()==False) &
+            (self.bjd_changed_df['법정동명_변경전'].isnull()==False)
+        ]
+        self.bjd_changed_dic: Dict[str, str] = self._create_bjd_changed_dictionary(sub_bjd_changed_df)
+        self.bjd_changed_old_bjd_nm_list: List[str] = list(self.bjd_changed_dic.keys())
 
     @staticmethod
     def correct_simple_spacing(
@@ -173,6 +182,7 @@ class ConvAddr():
                 new_bjd_nm = self.bjd_changed_dic[old_bjd_nm]
                 correct_addr = addr.replace(old_bjd_nm, new_bjd_nm)
                 if is_log:
+                    self.logger.info(f'{addr}')
                     self.logger.info(f'해당 법정동명은 변경되었습니다. 변경전 : [ {old_bjd_nm} ] 변경후 : [ {new_bjd_nm} ]')
                 return correct_addr
         return addr
