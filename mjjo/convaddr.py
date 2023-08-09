@@ -48,6 +48,16 @@ class ConvAddr():
         else:
             return None
 
+    @staticmethod
+    def _create_bjd_changed_dictionary(bjd_changed_df):
+        bjd_changed_dictionary: Dict[str, str] = dict()
+        for old_bjd_nm, new_bjd_nm in zip(bjd_changed_df['법정동명_변경전'], bjd_changed_df['법정동명_변경후']):
+            if old_bjd_nm is not None \
+            and new_bjd_nm is not None \
+            and old_bjd_nm != new_bjd_nm:
+                bjd_changed_dictionary[old_bjd_nm] = new_bjd_nm
+        return bjd_changed_dictionary
+
     def _prepare(self):
         cls_bjd = Bjd()
         file_name_bjd: str = cls_bjd.file_name_bjd
@@ -74,14 +84,12 @@ class ConvAddr():
         self.current_emd_list: List[str] = list(self.bjd_current_df['읍면동명'].unique())
         self.current_ri_list: List[str] = list(self.bjd_current_df['리명'].unique())
 
-        bjd_changed_df: pd.DataFrame = pd.read_csv(
+        self.bjd_changed_df: pd.DataFrame = pd.read_csv(
             file_name_bjd_changed,
             sep=input_sep,
             engine='python',
             encoding=input_encoding)
-        old_bjd_nm_list: List[str] = list(bjd_changed_df['법정동명_변경전'])
-        new_bjd_nm_list: List[str] = list(bjd_changed_df['법정동명_변경후'])
-        self.bjd_changed_dic: Dict[str, str] = dict((oldnm, newnm) for oldnm, newnm in zip(old_bjd_nm_list, new_bjd_nm_list))
+        self.bjd_changed_dic: Dict[str, str] = self._create_bjd_changed_dictionary(self.bjd_changed_df)
 
     @staticmethod
     def correct_simple_spacing(
@@ -126,8 +134,37 @@ class ConvAddr():
             str: A string that normalize multiple consecutive spaces in a string to a single space.
         """
 
+        if not isinstance(addr, str):
+            raise TypeError("type of object must be string")
+
         for bjdnm in self.bjd_smallest_list:
             if bjdnm in addr and (addr.split(bjdnm)[1][:2]).replace('-', '').isdigit() == True:
                 addr = addr.split(bjdnm)[0] + bjdnm + ' ' + addr.split(bjdnm)[1]
                 return addr
+        return addr
+
+    def correct_changed_bjd(
+        self,
+        addr: str
+    ) -> str:
+
+        """
+        입력된 문자열(한글 주소)에 변경전 법정동이 포함되어있으면 변경후 법정동명으로 반환
+
+        Args:
+            addr (str): The input korean address string.
+
+        Raises:
+            TypeError: If the 'addr' object is not of type string.
+
+        Returns:
+            str: A string that normalize multiple consecutive spaces in a string to a single space.
+        """
+
+        if not isinstance(addr, str):
+            raise TypeError("type of object must be string")
+
+        for changed_bjd in list(self.bjd_changed_dic.keys()):
+            if changed_bjd in addr:
+                return addr.replace(changed_bjd, self.bjd_changed_dic[changed_bjd])
         return addr
