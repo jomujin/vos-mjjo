@@ -131,7 +131,7 @@ class ConvAddr():
             TypeError: If the 'addr' object is not of type string.
 
         Returns:
-            str: A string that normalize multiple consecutive spaces in a string to a single space.
+            str: A string that is the smallest administrative division name and address number space of the input string, with multiple spaces normalized to a single space.
         """
 
         if not isinstance(addr, str):
@@ -149,7 +149,7 @@ class ConvAddr():
     ) -> str:
 
         """
-        입력된 문자열(한글 주소)에 변경전 법정동이 포함되어있으면 변경후 법정동명으로 반환
+        입력된 문자열(한글 주소)에 변경전 법정동이 포함되어있으면 변경후 법정동명으로 교환하여 반환
 
         Args:
             addr (str): The input korean address string.
@@ -158,7 +158,7 @@ class ConvAddr():
             TypeError: If the 'addr' object is not of type string.
 
         Returns:
-            str: A string that normalize multiple consecutive spaces in a string to a single space.
+            str: If the input string contains the previous administrative division name, eplace it with the modified administrative division name and return.
         """
 
         if not isinstance(addr, str):
