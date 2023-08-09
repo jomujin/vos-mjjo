@@ -7,6 +7,7 @@ from typing import (
     Optional
 )
 from dataclasses import dataclass
+from mjjo import Log
 from mjjo.bjd import Bjd
 
 
@@ -33,6 +34,7 @@ class ConvAddr():
 
 
     def __init__(self):
+        self.logger = Log('ConvertAddress').stream_handler("INFO")
         self._prepare()
         pass
 
@@ -89,6 +91,7 @@ class ConvAddr():
             sep=input_sep,
             engine='python',
             encoding=input_encoding)
+        self.bjd_changed_old_bjd_nm_list: List[str] = list(old_nm for old_nm in self.bjd_current_df['법정동명_변경전'] if old_nm is not None)
         self.bjd_changed_dic: Dict[str, str] = self._create_bjd_changed_dictionary(self.bjd_changed_df)
 
     @staticmethod
@@ -145,7 +148,8 @@ class ConvAddr():
 
     def correct_changed_bjd(
         self,
-        addr: str
+        addr: str,
+        is_log: bool
     ) -> str:
 
         """
@@ -164,7 +168,11 @@ class ConvAddr():
         if not isinstance(addr, str):
             raise TypeError("type of object must be string")
 
-        for changed_bjd in list(self.bjd_changed_dic.keys()):
-            if changed_bjd in addr:
-                return addr.replace(changed_bjd, self.bjd_changed_dic[changed_bjd])
+        for old_bjd_nm in self.bjd_changed_old_bjd_nm_list:
+            if old_bjd_nm in addr:
+                new_bjd_nm = self.bjd_changed_dic[old_bjd_nm]
+                correct_addr = addr.replace(old_bjd_nm, new_bjd_nm)
+                if is_log:
+                    self.logger.info(f'해당 법정동명은 변경되었습니다. 변경전 : [ {old_bjd_nm} ] 변경후 : [ {new_bjd_nm} ]')
+                return correct_addr
         return addr
