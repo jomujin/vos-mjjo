@@ -15,6 +15,9 @@ from collections import defaultdict
 from dotenv import load_dotenv
 from dataclasses import dataclass
 from mjjo import Log
+from mjjo.library.data import (
+    ADD_BJD_CHANGED_DICTIONARY
+)
 
 
 @dataclass
@@ -40,6 +43,7 @@ class Bjd():
         self.file_name_bjd_smallest: str = f'{self.file_path}/bjd_smallest.txt'
         self.file_name_bjd_frequency_dictionary: str = f'{self.file_path}/bjd_frequency_dictionary.txt'
         self.logger = Log('Bjd').stream_handler("INFO")
+        self.add_bjd_changed_dictionary: Dict[str, str] = ADD_BJD_CHANGED_DICTIONARY
 
     @staticmethod
     def _request_api(api_url):
@@ -66,7 +70,7 @@ class Bjd():
                         '삭제일자': data['삭제일자'],
                         '생성일자': data['생성일자'],
                         '순위': data['순위'],
-                        '시군구명': str(data['시군구명']) if data['시군구명'] is not None else None,
+                        '시군구명': self._split_sgg_nm(str(data['시군구명'])) if data['시군구명'] is not None else None,
                         '시도명': str(data['시도명']) if data['시도명'] is not None else None,
                         '읍면동명': str(data['읍면동명']) if data['읍면동명'] is not None else None,
                     }
@@ -239,14 +243,16 @@ class ChangedBjd(Bjd):
         super().__init__()
         self.changed_bjd_df: pd.DataFrame = None
 
-    @staticmethod
     def _create_gangwon_prev_bjd_cd(
+        self,
         sido_nm: str,
         prev_bjd_cd: str, # 법정동코드_변경전
         bjd_cd: str # 법정동코드_변경후
     ):
         if sido_nm == '강원특별자치도':
             return f'42{bjd_cd[2:]}'
+        elif bjd_cd in self.add_bjd_changed_dictionary.keys():
+            return self.add_bjd_changed_dictionary[bjd_cd]
         else:
             return prev_bjd_cd
 
@@ -301,8 +307,8 @@ class ChangedBjd(Bjd):
             if bjd_cd_prev != bjd_cd_curr:
                 bjd_cd_changed = f'{bjd_cd_curr} > {bjd_cd_curr}'
         if bjd_nm_prev and bjd_nm_curr:
-            changed_list_curr = list()
             changed_list_prev = list()
+            changed_list_curr = list()
             for w1, w2 in zip(bjd_nm_prev.split(), bjd_nm_curr.split()):
                 if w1 != w2:
                     changed_list_prev.append(w1)
@@ -346,10 +352,10 @@ class ChangedBjd(Bjd):
         self.changed_bjd_df['삭제일자_변경전'] = self.changed_bjd_df['법정동코드_변경전'].apply(lambda x: self._get_prev_value(x, '삭제일자'))
 
         self.changed_bjd_df['변경내역'] = self.changed_bjd_df[[
-            '법정동코드_변경전', 
             '법정동코드_변경후',
-            '법정동명_변경전',
-            '법정동명_변경후'
+            '법정동코드_변경전', 
+            '법정동명_변경후',
+            '법정동명_변경전'
         ]].apply(lambda x: self._find_diff(*x), axis=1)
         self.logger.info("Success Created Changed Bjd Dataframe")
         
