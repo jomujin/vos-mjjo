@@ -35,14 +35,23 @@ class ConvAddr():
 
 
     def __init__(self):
+        self.bjd_current_dic = None
+        self.bjd_smallest_list = None
+        self.bjd_current_bjd_nm_list = None
+        self.current_sido_sgg_list = None
+        self.current_sido_list = None
+        self.current_sgg_list = None
+        self.current_emd_list = None
+        self.current_ri_list = None
+        self.bjd_changed_dic = None
+        self.bjd_changed_old_bjd_nm_list = None
         self.logger = Log('ConvertAddress').stream_handler("INFO")
         self._prepare()
-        pass
 
     @staticmethod
     def _concat_sido_sgg(
-        sido_nm,
-        sgg_nm
+        sido_nm: Optional[str],
+        sgg_nm: Optional[str]
     ):
         if sido_nm is not None and sgg_nm is not None:
             return f'{sido_nm} {sgg_nm}'
@@ -53,7 +62,7 @@ class ConvAddr():
 
     def _create_bjd_changed_dictionary(
         self,
-        bjd_changed_df
+        bjd_changed_df: pd.DataFrame
     ):
         bjd_changed_dictionary: Dict[str, str] = dict()
         for old_bjd_cd, old_bjd_nm, new_bjd_nm in zip(
@@ -83,25 +92,25 @@ class ConvAddr():
         self.bjd_current_dic: Dict[str, str] = dict((line.split('\t')[2], line.split('\t')[9].replace('\n', '')) for line in open(file_name_bjd_current, 'r'))
         self.bjd_smallest_list: List[str] = [(line.strip()) for line in open(file_name_bjd_smallest, 'r')]
         
-        self.bjd_current_df: pd.DataFrame = pd.read_csv(
+        bjd_current_df: pd.DataFrame = pd.read_csv(
             file_name_bjd_current,
             sep=input_sep,
             engine='python',
             encoding=input_encoding)
-        self.bjd_current_bjd_nm_list: List[str] = list(bjd_nm for bjd_nm in self.bjd_current_df['법정동명'] if bjd_nm is not None)
-        self.bjd_current_df['시도시군구명'] = self.bjd_current_df[['시도명', '시군구명']].apply(lambda x: self._concat_sido_sgg(*x), axis=1)
-        self.current_sido_sgg_list: List[str] = list(self.bjd_current_df['시도시군구명'].unique())
-        self.current_sido_list: List[str] = list(self.bjd_current_df['시도명'].unique())
-        self.current_sgg_list: List[str] = list(self.bjd_current_df['시군구명'].unique())
-        self.current_emd_list: List[str] = list(self.bjd_current_df['읍면동명'].unique())
-        self.current_ri_list: List[str] = list(self.bjd_current_df['리명'].unique())
+        self.bjd_current_bjd_nm_list: List[str] = list(bjd_nm for bjd_nm in bjd_current_df['법정동명'] if bjd_nm is not None)
+        bjd_current_df['시도시군구명'] = bjd_current_df[['시도명', '시군구명']].apply(lambda x: self._concat_sido_sgg(*x), axis=1)
+        self.current_sido_sgg_list: List[str] = list(bjd_current_df['시도시군구명'].unique())
+        self.current_sido_list: List[str] = list(bjd_current_df['시도명'].unique())
+        self.current_sgg_list: List[str] = list(bjd_current_df['시군구명'].unique())
+        self.current_emd_list: List[str] = list(bjd_current_df['읍면동명'].unique())
+        self.current_ri_list: List[str] = list(bjd_current_df['리명'].unique())
 
-        self.bjd_changed_df: pd.DataFrame = pd.read_csv(
+        bjd_changed_df: pd.DataFrame = pd.read_csv(
             file_name_bjd_changed,
             sep=input_sep,
             engine='python',
             encoding=input_encoding)
-        sub_bjd_changed_df = self.bjd_changed_df.loc[
+        sub_bjd_changed_df = bjd_changed_df.loc[
             (self.bjd_changed_df['법정동명_변경후'].isnull()==False) &
             (self.bjd_changed_df['법정동명_변경전'].isnull()==False)
         ]
@@ -146,6 +155,7 @@ class ConvAddr():
 
         Raises:
             TypeError: If the 'addr' object is not of type string.
+            ValueError: If the 'bjd_smallest_list' class constructor is None.
 
         Returns:
             str: A string that is the smallest administrative division name and address number space of the input string, with multiple spaces normalized to a single space.
@@ -153,6 +163,9 @@ class ConvAddr():
 
         if not isinstance(addr, str):
             raise TypeError("type of object must be string")
+
+        if self.bjd_smallest_list is None:
+            raise ValueError("bjd_smallest_list is None")
 
         for bjdnm in self.bjd_smallest_list:
             if bjdnm in addr and (addr.split(bjdnm)[1][:2]).replace('-', '').isdigit() == True:
@@ -174,6 +187,8 @@ class ConvAddr():
 
         Raises:
             TypeError: If the 'addr' object is not of type string.
+            ValueError: If the 'bjd_changed_old_bjd_nm_list' class constructor is None.
+            ValueError: If the 'bjd_changed_dic' class constructor is None.
 
         Returns:
             str: If the input string contains the previous administrative division name, eplace it with the modified administrative division name and return.
@@ -181,6 +196,12 @@ class ConvAddr():
 
         if not isinstance(addr, str):
             raise TypeError("type of object must be string")
+
+        if self.bjd_changed_old_bjd_nm_list is None:
+            raise ValueError("bjd_changed_old_bjd_nm_list is None")
+
+        if self.bjd_changed_dic is None:
+            raise ValueError("bjd_changed_dic is None")
 
         origin_addr: str = addr
         changed_list: List[str] = list()
