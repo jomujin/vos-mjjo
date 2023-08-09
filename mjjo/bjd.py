@@ -16,7 +16,8 @@ from dotenv import load_dotenv
 from dataclasses import dataclass
 from mjjo import Log
 from mjjo.library.data import (
-    ADD_BJD_CHANGED_DICTIONARY
+    ADD_BJD_CHANGED_DICTIONARY,
+    CORRECT_ERROR_BJD
 )
 
 
@@ -44,6 +45,7 @@ class Bjd():
         self.file_name_bjd_frequency_dictionary: str = f'{self.file_path}/bjd_frequency_dictionary.txt'
         self.logger = Log('Bjd').stream_handler("INFO")
         self.add_bjd_changed_dictionary: Dict[str, str] = ADD_BJD_CHANGED_DICTIONARY
+        self.correct_error_bjd: Dict[Dict[str, Optional[str]]] = CORRECT_ERROR_BJD
 
     @staticmethod
     def _request_api(api_url):
@@ -78,6 +80,15 @@ class Bjd():
             else:
                 break
         return res_dic
+
+    def _correct_error(
+        self,
+        api_dic: Dict[str, Dict[str, str]]
+    ):
+        for cor_bjd_cd, cor_values in self.correct_error_bjd.items():
+            for col_nm, cor_value in cor_values.items():
+                api_dic[cor_bjd_cd][col_nm] = cor_value
+        return api_dic
 
     @staticmethod
     def _split_sgg_nm(
@@ -154,6 +165,7 @@ class Bjd():
         """
 
         res_dic = self._crawl_api()
+        res_dic = self._correct_error(res_dic)
         res_df = self._make_dataframe(res_dic)
         self.bjd_api_dictionary = res_dic
         self.bjd_api_df = res_df
