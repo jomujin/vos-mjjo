@@ -186,3 +186,35 @@ class ConvAddr():
                     self.logger.info(f'해당 법정동명은 변경되었습니다. 변경전 : [ {old_bjd_nm} ] 변경후 : [ {new_bjd_nm} ]')
                 return correct_addr
         return addr
+
+    def correct_bjd(
+        self,
+        addr: str,
+        is_log: bool
+    ):
+
+        """
+        입력된 문자열(한글 주소)의 법정동명 교정하여 반환
+
+        Args:
+            addr (str): The input korean address string.
+
+        Raises:
+            TypeError: If the 'addr' object is not of type string.
+
+        Sub Functions:
+            - correct_simple_spacing
+            - correct_smallest_bjd_spacing
+            - correct_changed_bjd
+
+        Returns:
+            Correct and return the input string by adjusting spaces in the main address and modifying the administrative division name.
+        """
+
+        if not isinstance(addr, str):
+            raise TypeError("type of object must be string")
+
+        addr = self.correct_simple_spacing(addr)
+        addr = self.correct_smallest_bjd_spacing(addr)
+        addr = self.correct_changed_bjd(addr, is_log)
+        return addr
