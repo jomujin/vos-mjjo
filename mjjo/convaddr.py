@@ -177,14 +177,20 @@ class ConvAddr():
         if not isinstance(addr, str):
             raise TypeError("type of object must be string")
 
+        origin_addr: str = addr
+        changed_list: List[str] = list()
         for old_bjd_nm in self.bjd_changed_old_bjd_nm_list:
             if old_bjd_nm in addr:
-                new_bjd_nm = self.bjd_changed_dic[old_bjd_nm]
-                correct_addr = addr.replace(old_bjd_nm, new_bjd_nm)
+                changed_list.append(old_bjd_nm)
+
+        if changed_list:
+            for changed_bjd_nm in changed_list:
+                after_changed_bjd_nm = self.bjd_changed_dic[changed_bjd_nm]
+                addr = addr.replace(changed_bjd_nm, after_changed_bjd_nm)
                 if is_log:
-                    self.logger.info(f'{addr}')
-                    self.logger.info(f'해당 법정동명은 변경되었습니다. 변경전 : [ {old_bjd_nm} ] 변경후 : [ {new_bjd_nm} ]')
-                return correct_addr
+                    self.logger.info(f'{origin_addr}')
+                    self.logger.info(f'해당 법정동명은 변경되었습니다. 변경전 : [ {changed_bjd_nm} ] 변경후 : [ {after_changed_bjd_nm} ]')
+
         return addr
 
     def correct_bjd(
