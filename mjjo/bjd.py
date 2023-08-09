@@ -357,6 +357,7 @@ class ChangedBjd(Bjd):
             '법정동명_변경후',
             '법정동명_변경전'
         ]].apply(lambda x: self._find_diff(*x), axis=1)
+        self.changed_bjd_df = self.changed_bjd_df.sort_values(['생성일자_변경후'], na_position='first')
         self.logger.info("Success Created Changed Bjd Dataframe")
         
     def _save_changed_bjd(self):
