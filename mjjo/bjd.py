@@ -439,7 +439,7 @@ class BjdFrequencyDictionary(CurrentBjd):
                     vstr = vstr + str(s) + sep
                 vstr = vstr.rstrip(sep)  # 마지막에도 추가되는  sep을 삭제 
                 vstr = vstr + '\n'
-            
             f.writelines(vstr)  # 한 라인씩 저장 
             f.close()
+
         self.logger.info("Success Saved Bjd Frequency Dictionary To Text File")
