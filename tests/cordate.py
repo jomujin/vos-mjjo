@@ -4,8 +4,7 @@ import unittest
 from datetime import datetime
 from symspellpy import SymSpell
 from typing import ( List )
-# os.chdir('../')
-# sys.path.append(os.getcwd())
+sys.path.append(os.getcwd())
 from mjjo.cordate import (
     CorDate,
     get_correct_array,

@@ -9,6 +9,7 @@ from typing import (
 )
 import requests
 import pandas as pd
+import pkg_resources
 from collections import defaultdict
 from dotenv import load_dotenv
 from dataclasses import dataclass
@@ -35,12 +36,32 @@ class Bjd():
         self.output_sep: Literal['\t'] = '\t'
         self.output_encoding: str = 'utf-8'
         self.output_index: bool = False
-        self.file_path: str = f'{os.getcwd()}/mjjo/data'
-        self.file_name_bjd: str = f'{self.file_path}/bjd.txt'
-        self.file_name_bjd_current: str = f'{self.file_path}/bjd_current.txt'
-        self.file_name_bjd_changed: str = f'{self.file_path}/bjd_changed.txt'
-        self.file_name_bjd_smallest: str = f'{self.file_path}/bjd_smallest.txt'
-        self.file_name_bjd_frequency_dictionary: str = f'{self.file_path}/bjd_frequency_dictionary.txt'
+        self.file_name_bjd = pkg_resources.resource_filename(
+            "mjjo", 
+            "data/bjd.txt"
+        )
+        self.file_name_bjd_current = pkg_resources.resource_filename(
+            "mjjo", 
+            "data/bjd_current.txt"
+        )
+        self.file_name_bjd_changed = pkg_resources.resource_filename(
+            "mjjo", 
+            "data/bjd_changed.txt"
+        )
+        self.file_name_bjd_smallest = pkg_resources.resource_filename(
+            "mjjo", 
+            "data/bjd_smallest.txt"
+        )
+        self.file_name_bjd_frequency_dictionary = pkg_resources.resource_filename(
+            "mjjo", 
+            "data/bjd_frequency_dictionary.txt"
+        )
+        # self.file_path: str = f'{os.getcwd()}/mjjo/data'
+        # self.file_name_bjd: str = f'{self.file_path}/bjd.txt'
+        # self.file_name_bjd_current: str = f'{self.file_path}/bjd_current.txt'
+        # self.file_name_bjd_changed: str = f'{self.file_path}/bjd_changed.txt'
+        # self.file_name_bjd_smallest: str = f'{self.file_path}/bjd_smallest.txt'
+        # self.file_name_bjd_frequency_dictionary: str = f'{self.file_path}/bjd_frequency_dictionary.txt'
         self.logger = Log('Bjd').stream_handler("INFO")
         self.add_bjd_changed_dictionary: Dict[str, str] = ADD_BJD_CHANGED_DICTIONARY
         self.correct_error_bjd: Dict[Dict[str, Optional[str]]] = CORRECT_ERROR_BJD
