@@ -160,10 +160,6 @@ cython_debug/
 #.idea/
 
 /package/date_dictionary.txt
-test.ipynb
+*.ipynb
 *.DS_Store
-mjjo/data/bjd_change_record_dictionary.txt
-mjjo/data/bjd_dictionary.txt
-mjjo/data/bjd_pnu.txt
-mjjo/data/cor_bjd_pnu.txt
-mjjo/data/smallest_bjd_dictionary.txt
+
