@@ -1,6 +1,7 @@
 import re
 import math
 import pkg_resources
+import numpy as np
 import pandas as pd
 from typing import (
     List,
@@ -91,7 +92,7 @@ class ConvAddr():
 
         self.bjd_current_dic: Dict[str, str] = dict((line.split('\t')[2], line.split('\t')[9].replace('\n', '')) for line in open(file_name_bjd_current, 'r'))
         self.bjd_smallest_list: List[str] = [(line.strip()) for line in open(file_name_bjd_smallest, 'r')]
-        
+
         bjd_current_df: pd.DataFrame = pd.read_csv(
             file_name_bjd_current,
             sep=input_sep,
@@ -99,11 +100,12 @@ class ConvAddr():
             encoding=input_encoding)
         self.bjd_current_bjd_nm_list: List[str] = list(bjd_nm for bjd_nm in bjd_current_df['법정동명'] if bjd_nm is not None)
         bjd_current_df['시도시군구명'] = bjd_current_df[['시도명', '시군구명']].apply(lambda x: self._concat_sido_sgg(*x), axis=1)
-        self.current_sido_sgg_list: List[str] = list(bjd_current_df['시도시군구명'].unique())
-        self.current_sido_list: List[str] = list(bjd_current_df['시도명'].unique())
-        self.current_sgg_list: List[str] = list(bjd_current_df['시군구명'].unique())
-        self.current_emd_list: List[str] = list(bjd_current_df['읍면동명'].unique())
-        self.current_ri_list: List[str] = list(bjd_current_df['리명'].unique())
+        self.current_sido_sgg_list: List[str] = list(sido_sgg for sido_sgg in bjd_current_df['시도시군구명'].unique() if isinstance(sido_sgg, str))
+        self.current_sido_list: List[str] = list(sido for sido in bjd_current_df['시도명'].unique() if isinstance(sido, str))
+        self.current_sgg_list: List[str] = list(sgg for sgg in bjd_current_df['시군구명'].unique() if isinstance(sgg, str))
+        self.current_emd_list: List[str] = list(emd for emd in bjd_current_df['읍면동명'].unique() if isinstance(emd, str))
+        self.current_ri_list: List[str] = list(ri for ri in bjd_current_df['리명'].unique() if isinstance(ri, str))
+        self.bjd_current_df = bjd_current_df
 
         bjd_changed_df: pd.DataFrame = pd.read_csv(
             file_name_bjd_changed,
@@ -111,8 +113,8 @@ class ConvAddr():
             engine='python',
             encoding=input_encoding)
         sub_bjd_changed_df = bjd_changed_df.loc[
-            (self.bjd_changed_df['법정동명_변경후'].isnull()==False) &
-            (self.bjd_changed_df['법정동명_변경전'].isnull()==False)
+            (bjd_changed_df['법정동명_변경후'].isnull()==False) &
+            (bjd_changed_df['법정동명_변경전'].isnull()==False)
         ]
         self.bjd_changed_dic: Dict[str, str] = self._create_bjd_changed_dictionary(sub_bjd_changed_df)
         self.bjd_changed_old_bjd_nm_list: List[str] = list(self.bjd_changed_dic.keys())
@@ -136,7 +138,7 @@ class ConvAddr():
         """
 
         if not isinstance(addr, str):
-            raise TypeError("type of object must be string")
+            raise TypeError("type of object('addr') must be string")
 
         return re.sub(r'\s+', ' ', addr)
 
@@ -162,7 +164,7 @@ class ConvAddr():
         """
 
         if not isinstance(addr, str):
-            raise TypeError("type of object must be string")
+            raise TypeError("type of object('addr') must be string")
 
         if self.bjd_smallest_list is None:
             raise ValueError("bjd_smallest_list is None")
@@ -176,7 +178,7 @@ class ConvAddr():
     def correct_changed_bjd(
         self,
         addr: str,
-        is_log: bool
+        is_log: bool = True
     ) -> str:
 
         """
@@ -195,7 +197,10 @@ class ConvAddr():
         """
 
         if not isinstance(addr, str):
-            raise TypeError("type of object must be string")
+            raise TypeError("type of object('addr') must be string")
+
+        if not isinstance(is_log, bool):
+            raise TypeError("type of object('is_log') must be bool")
 
         if self.bjd_changed_old_bjd_nm_list is None:
             raise ValueError("bjd_changed_old_bjd_nm_list is None")
@@ -222,7 +227,7 @@ class ConvAddr():
     def correct_bjd(
         self,
         addr: str,
-        is_log: bool
+        is_log: bool = True
     ):
 
         """
@@ -244,7 +249,10 @@ class ConvAddr():
         """
 
         if not isinstance(addr, str):
-            raise TypeError("type of object must be string")
+            raise TypeError("type of object('addr') must be string")
+
+        if not isinstance(is_log, bool):
+            raise TypeError("type of object('is_log') must be bool")
 
         addr = self.correct_simple_spacing(addr)
         addr = self.correct_smallest_bjd_spacing(addr)
