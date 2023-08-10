@@ -5,8 +5,8 @@ from typing import (
     List,
     Dict
 )
-os.chdir('../')
-sys.path.append(os.getcwd())
+# os.chdir('../')
+# sys.path.append(os.getcwd())
 from mjjo.convaddr import (
     ConvAddr
 )
