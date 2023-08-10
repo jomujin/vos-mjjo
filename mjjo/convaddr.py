@@ -90,8 +90,14 @@ class ConvAddr():
         input_index = cls_bjd.output_index
         input_sep = cls_bjd.output_sep
 
-        self.bjd_current_dic: Dict[str, str] = dict((line.split('\t')[2], line.split('\t')[9].replace('\n', '')) for line in open(file_name_bjd_current, 'r'))
-        self.bjd_smallest_list: List[str] = [(line.strip()) for line in open(file_name_bjd_smallest, 'r')]
+        with open(file_name_bjd_current, 'r') as file_bjd_current:
+            self.bjd_current_dic: Dict[str, str] = dict((line.split('\t')[2], line.split('\t')[9].replace('\n', '')) for line in file_bjd_current)
+
+        with open(file_name_bjd_smallest, 'r') as file_bjd_smallest:
+            self.bjd_smallest_list: List[str] = [line.strip() for line in file_bjd_smallest]
+
+        # self.bjd_current_dic: Dict[str, str] = dict((line.split('\t')[2], line.split('\t')[9].replace('\n', '')) for line in open(file_name_bjd_current, 'r'))
+        # self.bjd_smallest_list: List[str] = [(line.strip()) for line in open(file_name_bjd_smallest, 'r')]
 
         bjd_current_df: pd.DataFrame = pd.read_csv(
             file_name_bjd_current,
