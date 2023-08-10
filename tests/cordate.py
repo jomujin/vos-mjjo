@@ -44,7 +44,7 @@ class TestClass(unittest.TestCase):
         self.assertTrue(self.instance.dictionary_path, str)
         self.assertEqual(
             self.instance.dictionary_path,
-            f'{os.getcwd()}/mjjo/date_dictionary.txt'
+            f'{os.getcwd()}/mjjo/data/date_dictionary.txt'
         )
 
 
