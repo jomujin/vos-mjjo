@@ -2,7 +2,7 @@ vos-mjjo <br>
 [![PyPI version](https://badge.fury.io/py/vos-mjjo.svg)](https://pypi.org/project/vos-mjjo/)
 ========
 
-vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.17
+vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.0.0
 
 </br>
 
@@ -48,6 +48,12 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.
     -   Developed internal functions within the class
     -   Add module tests
 
+### Update 1.0.0 - 2023.08
+
+-   Update Convaddr class
+    -   Add method (union_similar_changed_bjd)
+    -   Update method (correct_changed_bjd)
+
 </br>
 
 # Install
@@ -69,7 +75,7 @@ mjjo.__version__()
 Output:
 
 ```python
-0.0.13
+1.0.0
 ```
 
 </br>
