@@ -38,5 +38,5 @@ setuptools.setup(
             'shortcut2 = package.module:func',
         ]
     },
-    test_suite=["tests.tests.suite"]
+    test_suite="tests.tests.suite"
 )
