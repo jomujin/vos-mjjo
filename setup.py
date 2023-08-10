@@ -26,7 +26,10 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.7',
-    install_requires=["symspellpy"],
+    install_requires=[
+        "symspellpy",
+        "pandas"
+    ],
     entry_points={
         'console_scripts': [
             'shortcut1 = package.module:func',
