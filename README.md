@@ -2,7 +2,7 @@ vos-mjjo <br>
 [![PyPI version](https://badge.fury.io/py/vos-mjjo.svg)](https://pypi.org/project/vos-mjjo/)
 ========
 
-vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.12
+vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.0.13
 
 </br>
 
@@ -37,6 +37,17 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v0.
 -   Version Update
     -   Update the date dictionary to reflect the time reference of 2023.08
 
+### Update 0.0.13 - 2023.08
+
+-   Built Bjd class
+    -   Built metadata with essential functionality
+    -   Developed internal functions within the class
+    -   Created file data for Convaddr internal functions
+-   Built Convaddr class
+    -   Built metadata with essential functionality
+    -   Developed internal functions within the class
+    -   Add module tests
+
 </br>
 
 # Install
@@ -49,7 +60,21 @@ pip install vos-mjjo
 
 # Usage
 
-**get_correct_array**
+```python
+import mjjo
+
+mjjo.__version__()
+```
+
+Output:
+
+```python
+0.0.13
+```
+
+</br>
+
+**cordate.get_correct_array**
 
 ```python
 from mjjo import cordate
@@ -65,7 +90,7 @@ cordate.get_correct_array(test_date)
 Output:
 
 ```python
-['19990101']
+["19990101"]
 ```
 
 ```python
@@ -101,18 +126,18 @@ Output:
 
 ```python
 []
-['19990101']
-['19900101', '19901001', '19990101']
-['01990901', '19990101']
-['01990901', '19990101']
-['01990901', '19990101']
-['01990109', '00190909', '01990901', '19990101']
-['19900101', '00090901', '19990101']
+["19990101"]
+["19900101", "19901001", "19990101"]
+["01990901", "19990101"]
+["01990901", "19990101"]
+["01990901", "19990101"]
+["01990109", "00190909", "01990901", "19990101"]
+["19900101", "00090901", "19990101"]
 ```
 
 </br>
 
-**get_correct_one**
+**cordate.get_correct_one**
 
 ```python
 from mjjo import cordate
@@ -128,7 +153,7 @@ cordate.get_correct_one(test_date)
 Output:
 
 ```python
-'19990101'
+"19990101"
 ```
 
 ```python
@@ -164,18 +189,18 @@ Output:
 
 ```python
 None
-'19990101'
-'19990101'
-'19990101'
-'19990101'
-'19990101'
-'19990101'
-'19990101'
+"19990101"
+"19990101"
+"19990101"
+"19990101"
+"19990101"
+"19990101"
+"19990101"
 ```
 
 </br>
 
-**look_up_array**
+**cordate.look_up_array**
 
 ```python
 from mjjo import cordate
@@ -185,7 +210,7 @@ CD = cordate.CorDate()
 CD.load_date_dictionary()
 # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
 # CD.look_up_array(date : str) -> list
-test_date = '99990101'
+test_date = "99990101"
 suggestions = CD.look_up_array(test_date)
 # 연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 출력
 for sugg in suggestions:
@@ -220,7 +245,7 @@ Output:
 
 </br>
 
-**look_up_one**
+**cordate.look_up_one**
 
 ```python
 from mjjo import cordate
@@ -230,7 +255,7 @@ CD = cordate.CorDate()
 CD.load_date_dictionary()
 # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
 # CD.look_up_one(date : str) -> str
-test_date = '99990101'
+test_date = "99990101"
 suggestion = CD.look_up_one(test_date)
 # 연월일 문자열에 Symspellpy로 max_distance=2로 날짜 리스트 중 가장 거리, 빈도 가까운 값 출력
 print(suggestion)
@@ -241,4 +266,123 @@ Output:
 ```python
 # term, distance, count
 19990101, 1, 158
+```
+
+</br>
+
+**convaddr.correct_simple_spacing**
+
+```python
+from mjjo import convaddr
+
+CA = convaddr.ConvAddr()
+# ConvAddr 클래스 부여
+test_addr = "서울시 강남구  삼성동 1"
+result = CA.correct_simple_spacing(addr=test_addr)
+# 문자열(한글 주소) 2개 이상의 연속된 공백을 단일 공백으로 변환하여 반환
+print(result)
+```
+
+Output:
+
+```python
+서울시 강남구 삼성동 1
+```
+
+</br>
+
+**convaddr.correct_smallest_bjd_spacing**
+
+```python
+from mjjo import convaddr
+
+CA = convaddr.ConvAddr()
+# ConvAddr 클래스 부여
+test_addr = "서울시 강남구 삼성동1"
+result = CA.correct_smallest_bjd_spacing(addr=test_addr)
+# 문자열(한글 주소) 최소 단위 법정동명("가", "동", "로", "리")과 번지 사이의 빈공백이 있을경우 공백으로 변환하여 반환
+print(result)
+```
+
+Output:
+
+```python
+서울시 강남구 삼성동 1
+```
+
+</br>
+
+**convaddr.correct_changed_bjd**
+
+```python
+from mjjo import convaddr
+
+CA = convaddr.ConvAddr()
+# ConvAddr 클래스 부여
+test_addr = "강원도 춘천시 서면 현암리 1-1"
+result = CA.correct_changed_bjd(addr=test_addr, is_log=False)
+# 문자열(한글 주소) 변경전 법정동명이 존재하면 변경후 법정동명으로 변환하여 반환
+# is_log: bool = True
+# is_log == True 일 경우, 변경전 법정동명과 변경후 법정동명을 출력
+print(result)
+```
+
+Output:
+
+```python
+강원특별자치도 춘천시 서면 현암리 1-1
+```
+
+</br>
+
+**convaddr.test_correct_bjd**
+
+```python
+from mjjo import convaddr
+
+CA = convaddr.ConvAddr()
+# ConvAddr 클래스 부여
+test_addr = "서울시 강남구 삼성동 1"
+result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+# 문자열(한글 주소) correct_simple_spacing, correct_smallest_bjd_spacing, correct_changed_bjd 순차적으로 실행하여 변환값 반환
+# is_log: bool = True
+# is_log == True 일 경우, 변경전 법정동명과 변경후 법정동명을 출력
+print(result)
+```
+
+Output:
+
+```python
+서울시 강남구 삼성동 1
+```
+
+```python
+from mjjo import convaddr
+
+CA = convaddr.ConvAddr()
+
+test_addr = "강원도 춘천시 서면 현암리"
+result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+print(result)
+
+test_addr = "강원도 춘천시 서면 현암리 1-1"
+result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+print(result)
+
+test_addr = "강원도 춘천시 서면 현암리1-1"
+result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+print(result)
+
+test_addr = "강원도   춘천시 서면 현암리 1-1",
+result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+print(result)
+```
+
+Output:
+
+```python
+강원특별자치도 춘천시 서면 현암리
+강원특별자치도 춘천시 서면 현암리 1-1
+강원특별자치도 춘천시 서면 현암리 1-1
+강원특별자치도 춘천시 서면 현암리 1-1
 ```
