@@ -178,6 +178,24 @@ class ConvAddr():
                 return addr
         return addr
 
+    @staticmethod
+    def union_similar_changed_bjd(
+        changed_bjd_list: List[str]
+    ):
+
+        """
+        교체할 변경내역 법정동 리스트 중 완전히 포함관계인 경우는 제외하여 반환
+        """
+
+        if len(changed_bjd_list) > 0:
+            new_bjd_list: List[str] = list()
+            for bjd in changed_bjd_list:
+                if not any(bjd in other_bjd for other_bjd in changed_bjd_list if other_bjd != bjd):
+                    new_bjd_list.append(bjd)
+            return new_bjd_list
+        else:
+            return changed_bjd_list
+
     def correct_changed_bjd(
         self,
         addr: str,
@@ -217,6 +235,7 @@ class ConvAddr():
             if old_bjd_nm in addr:
                 changed_list.append(old_bjd_nm)
 
+        changed_list = self.union_similar_changed_bjd(changed_list)
         if changed_list:
             for changed_bjd_nm in changed_list:
                 after_changed_bjd_nm = self.bjd_changed_dic[changed_bjd_nm]
