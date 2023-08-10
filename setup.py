@@ -19,7 +19,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/jomujin/vos-mjjo",
     packages=setuptools.find_packages(),
-    package_data={"mjjo": ["date_dictionary.txt"]},
+    package_data={"mjjo": ["data/*.txt"]},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -38,5 +38,8 @@ setuptools.setup(
             'shortcut2 = package.module:func',
         ]
     },
-    test_suite='tests.test_cordate'
+    test_suite=[
+        "tests.test_cordate",
+        "tests.test_convaddr",
+    ]
 )

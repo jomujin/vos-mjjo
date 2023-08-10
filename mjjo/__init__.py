@@ -1,7 +1,7 @@
 import logging
 
 
-version = '0.0.16' 
+version = '0.0.17' 
 author = 'mjjo'
 description = 'This library is designed to correct dates in building permit records'
 license = 'MIT'
