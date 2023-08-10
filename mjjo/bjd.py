@@ -1,6 +1,5 @@
 import os
 import re
-import time
 import json
 from typing import (
     List,
@@ -10,7 +9,6 @@ from typing import (
 )
 import requests
 import pandas as pd
-import xml.etree.ElementTree as ET
 from collections import defaultdict
 from dotenv import load_dotenv
 from dataclasses import dataclass
