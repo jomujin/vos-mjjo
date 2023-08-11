@@ -28,8 +28,8 @@ class Bjd():
         load_dotenv()
         self.api_base_url: str = "https://api.odcloud.kr/api"
         self.api_get_url: str = "/15063424/v1/uddi:257e1510-0eeb-44de-8883-8295c94dadf7" # https://www.data.go.kr/data/15063424/fileData.do#layer-api-guide API 목록 중 국토교통부_전국 법정동_20230710 GET
-        # self.api_key: str = os.environ['BJD_API_KEY']
-        self.api_key = None
+        self.api_key: str = os.environ['BJD_API_KEY']
+        # self.api_key = None
         self.api_page: int = 0
         self.api_per_page: int = 1024
         self.bjd_api_dictionary: Dict[str, Dict[str, str]] = None
@@ -66,6 +66,7 @@ class Bjd():
         self.logger = Log('Bjd').stream_handler("INFO")
         self.add_bjd_changed_dictionary: Dict[str, str] = ADD_BJD_CHANGED_DICTIONARY
         self.correct_error_bjd: Dict[Dict[str, Optional[str]]] = CORRECT_ERROR_BJD
+        self.multi_word_sgg_list: List[str] = list()
 
     @staticmethod
     def _request_api(api_url):
@@ -110,8 +111,8 @@ class Bjd():
                 api_dic[cor_bjd_cd][col_nm] = cor_value
         return api_dic
 
-    @staticmethod
     def _split_sgg_nm(
+        self,
         sgg_nm: Optional[str]
     ) -> Optional[str]:
         """
@@ -128,6 +129,7 @@ class Bjd():
         and len(sgg_nm) > 3 \
         and sgg_nm[-1] in ['구', '군'] \
         and '시' in sgg_nm[1:-1]:
+            self.multi_word_sgg_list.append(sgg_nm)
             result = sgg_nm.split('시', 1)
             result[0] = result[0] + '시'
             return ' '.join(result)
@@ -170,7 +172,6 @@ class Bjd():
 
     def _make_dataframe(self, res_dic) -> pd.DataFrame:
         res_df = pd.DataFrame(res_dic).T.sort_values('법정동코드').reset_index().drop(columns='index').replace(0, None).replace('0', None)
-        res_df['시군구명'] = res_df['시군구명'].apply(lambda x: self._split_sgg_nm(x))
         res_df['법정동명'] = res_df[[
             '시도명',
             '시군구명',
