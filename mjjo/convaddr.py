@@ -36,6 +36,7 @@ class ConvAddr():
         self.bjd_current_dic = None
         self.bjd_smallest_list = None
         self.bjd_current_bjd_nm_list = None
+        self.multiple_word_sgg_list = None
         self.current_sido_sgg_list = None
         self.current_sido_list = None
         self.current_sgg_list = None
@@ -83,6 +84,7 @@ class ConvAddr():
         file_name_bjd_changed: str = cls_bjd.file_name_bjd_changed
         file_name_bjd_smallest: str = cls_bjd.file_name_bjd_smallest
         file_name_bjd_frequency_dictionary: str = cls_bjd.file_name_bjd_frequency_dictionary
+        file_name_multiple_word_sgg_list: str = cls_bjd.file_name_multiple_word_sgg_list
         input_encoding = cls_bjd.output_encoding
         input_index = cls_bjd.output_index
         input_sep = cls_bjd.output_sep
@@ -92,6 +94,9 @@ class ConvAddr():
 
         with open(file_name_bjd_smallest, 'r') as file_bjd_smallest:
             self.bjd_smallest_list: List[str] = [line.strip() for line in file_bjd_smallest]
+
+        with open(file_name_multiple_word_sgg_list, 'r') as file_multiple_word_sgg_list:
+            self.multiple_word_sgg_list: List[str] = [line.strip() for line in file_multiple_word_sgg_list]
 
         # self.bjd_current_dic: Dict[str, str] = dict((line.split('\t')[2], line.split('\t')[9].replace('\n', '')) for line in open(file_name_bjd_current, 'r'))
         # self.bjd_smallest_list: List[str] = [(line.strip()) for line in open(file_name_bjd_smallest, 'r')]
