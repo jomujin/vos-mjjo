@@ -33,17 +33,17 @@ class ConvAddr():
 
 
     def __init__(self):
-        self.bjd_current_dic = None
-        self.bjd_smallest_list = None
-        self.bjd_current_bjd_nm_list = None
-        self.multiple_word_sgg_list = None
-        self.current_sido_sgg_list = None
-        self.current_sido_list = None
-        self.current_sgg_list = None
-        self.current_emd_list = None
-        self.current_ri_list = None
-        self.bjd_changed_dic = None
-        self.bjd_changed_old_bjd_nm_list = None
+        self.bjd_current_dic: Dict[str, str] = None
+        self.bjd_smallest_list: List[str] = None
+        self.bjd_current_bjd_nm_list: List[str] = None
+        self.multiple_word_sgg_list: List[str] = None
+        self.current_sido_sgg_list: List[str] = None
+        self.current_sido_list: List[str] = None
+        self.current_sgg_list: List[str] = None
+        self.current_emd_list: List[str] = None
+        self.current_ri_list: List[str] = None
+        self.bjd_changed_dic: Dict[str, str] = None
+        self.bjd_changed_old_bjd_nm_list: List[str] = None
         self.logger = Log('ConvertAddress').stream_handler("INFO")
         self._prepare()
 
