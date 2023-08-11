@@ -57,6 +57,10 @@ class Bjd():
             "mjjo", 
             "data/bjd_frequency_dictionary.txt"
         )
+        self.file_name_multiple_word_sgg_list = pkg_resources.resource_filename(
+            "mjjo", 
+            "data/multiple_word_sgg_list.txt"
+        )
         # self.file_path: str = f'{os.getcwd()}/mjjo/data'
         # self.file_name_bjd: str = f'{self.file_path}/bjd.txt'
         # self.file_name_bjd_current: str = f'{self.file_path}/bjd_current.txt'
@@ -66,7 +70,7 @@ class Bjd():
         self.logger = Log('Bjd').stream_handler("INFO")
         self.add_bjd_changed_dictionary: Dict[str, str] = ADD_BJD_CHANGED_DICTIONARY
         self.correct_error_bjd: Dict[Dict[str, Optional[str]]] = CORRECT_ERROR_BJD
-        self.multi_word_sgg_list: List[str] = list()
+        self.multiple_word_sgg_list: List[str] = list()
 
     @staticmethod
     def _request_api(api_url):
@@ -129,10 +133,15 @@ class Bjd():
         and len(sgg_nm) > 3 \
         and sgg_nm[-1] in ['구', '군'] \
         and '시' in sgg_nm[1:-1]:
-            self.multi_word_sgg_list.append(sgg_nm)
             result = sgg_nm.split('시', 1)
             result[0] = result[0] + '시'
-            return ' '.join(result)
+            return_sgg_nm = ' '.join(result)
+
+            # multiple_word_sgg_list 에 대상 시군구명 추가
+            if return_sgg_nm not in self.multiple_word_sgg_list:
+                self.multiple_word_sgg_list.append(return_sgg_nm)
+
+            return return_sgg_nm
         else:
             return sgg_nm
 
@@ -202,6 +211,11 @@ class Bjd():
             index=self.output_index
         )
         self.logger.info("Success Saved Bjd Dataframe To Text File")
+        if self.multiple_word_sgg_list is not None:
+            with open(self.file_name_multiple_word_sgg_list, 'w') as f:
+                f.writelines('\n'.join(self.multiple_word_sgg_list))
+                f.close()
+        self.logger.info("Success Saved Multiple Sigungu List To Text File")
         
     def _do_all_bjd_job(self):
         """
