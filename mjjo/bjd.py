@@ -115,6 +115,12 @@ class Bjd():
                 api_dic[cor_bjd_cd][col_nm] = cor_value
         return api_dic
 
+    @staticmethod
+    def _update_sejongsi(sgg_nm):
+        if sgg_nm == '세종시':
+            return None
+        return sgg_nm
+
     def _split_sgg_nm(
         self,
         sgg_nm: Optional[str]
@@ -128,6 +134,8 @@ class Bjd():
         - 조건 3: 마지막 문자열이 '구' 혹은 '군'
         - 조건 4: 첫번째와 마지막 문자열을 제외한 나머지 문자열 중 '시' 가 포함
         """
+
+        sgg_nm = self._update_sejongsi(sgg_nm)
 
         if sgg_nm is not None \
         and len(sgg_nm) > 3 \
