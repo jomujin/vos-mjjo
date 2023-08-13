@@ -115,6 +115,19 @@ class Bjd():
                 api_dic[cor_bjd_cd][col_nm] = cor_value
         return api_dic
 
+    def _correct_prev_bjd_cd(
+        self,
+        sido_nm: str,
+        prev_bjd_cd: str, # 법정동코드_변경전
+        bjd_cd: str # 법정동코드_변경후
+    ):
+        if sido_nm == '강원특별자치도':
+            return f'42{bjd_cd[2:]}'
+        elif bjd_cd in self.add_bjd_changed_dictionary.keys():
+            return self.add_bjd_changed_dictionary[bjd_cd]
+        else:
+            return prev_bjd_cd
+
     @staticmethod
     def _update_sejongsi(sgg_nm):
         if sgg_nm == '세종시':
@@ -163,7 +176,9 @@ class Bjd():
         """
 
         if bjd_nm is not None:
-            return re.sub(r'[^ 0-9ㄱ-ㅎ가-힣]+', '', bjd_nm)
+            bjd_nm = re.sub(r'\([^)]*\)', '', bjd_nm)
+            bjd_nm = re.sub(r'[^ 0-9ㄱ-ㅎ가-힣]+', '', bjd_nm)
+            return bjd_nm
         return ''
 
     def _get_full_bjd_nm(
@@ -189,6 +204,11 @@ class Bjd():
 
     def _make_dataframe(self, res_dic) -> pd.DataFrame:
         res_df = pd.DataFrame(res_dic).T.sort_values('법정동코드').reset_index().drop(columns='index').replace(0, None).replace('0', None)
+        res_df['과거법정동코드'] = res_df[[
+                '시도명',
+                '과거법정동코드',
+                '법정동코드'
+            ]].apply(lambda x: self._correct_prev_bjd_cd(*x), axis=1)
         res_df['법정동명'] = res_df[[
             '시도명',
             '시군구명',
@@ -298,19 +318,6 @@ class ChangedBjd(Bjd):
         super().__init__()
         self.changed_bjd_df: pd.DataFrame = None
 
-    def _create_gangwon_prev_bjd_cd(
-        self,
-        sido_nm: str,
-        prev_bjd_cd: str, # 법정동코드_변경전
-        bjd_cd: str # 법정동코드_변경후
-    ):
-        if sido_nm == '강원특별자치도':
-            return f'42{bjd_cd[2:]}'
-        elif bjd_cd in self.add_bjd_changed_dictionary.keys():
-            return self.add_bjd_changed_dictionary[bjd_cd]
-        else:
-            return prev_bjd_cd
-
     def _get_prev_bjd_nm(
         self,
         prev_bjd_cd: Optional[str] # 법정동코드_변경전
@@ -382,11 +389,11 @@ class ChangedBjd(Bjd):
             '삭제일자': '삭제일자_변경후',
             '과거법정동코드': '법정동코드_변경전',
         })
-        self.changed_bjd_df['법정동코드_변경전'] = self.changed_bjd_df[[
-            '시도명',
-            '법정동코드_변경전',
-            '법정동코드_변경후'
-        ]].apply(lambda x: self._create_gangwon_prev_bjd_cd(*x), axis=1)
+        # self.changed_bjd_df['법정동코드_변경전'] = self.changed_bjd_df[[
+        #     '시도명',
+        #     '법정동코드_변경전',
+        #     '법정동코드_변경후'
+        # ]].apply(lambda x: self._create_gangwon_prev_bjd_cd(*x), axis=1)
         self.changed_bjd_df = self.changed_bjd_df[[
             '법정동코드_변경후',
             '법정동명_변경후',
