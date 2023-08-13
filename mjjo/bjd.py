@@ -192,11 +192,6 @@ class Bjd():
         행정구역명을 결합하여 전체 법정동명을 생성하는 기능
         """
 
-        # sido_nm = self._clean_bjd_nm(sido_nm)
-        # sgg_nm = self._clean_bjd_nm(sgg_nm)
-        # emd_nm = self._clean_bjd_nm(emd_nm)
-        # ri_nm = self._clean_bjd_nm(ri_nm)
-
         full_bjd_nm = f'{sido_nm} {sgg_nm} {emd_nm} {ri_nm}'
         full_bjd_nm = full_bjd_nm.strip()  # 맨 앞과 맨 뒤의 공백 제거
         full_bjd_nm = re.sub(r'\s+', ' ', full_bjd_nm)  # 공백이 여러 칸인 것을 한 칸으로 변경
@@ -213,6 +208,10 @@ class Bjd():
         res_df['시군구명'] = res_df['시군구명'].apply(lambda x: self._clean_bjd_nm(x))
         res_df['읍면동명'] = res_df['읍면동명'].apply(lambda x: self._clean_bjd_nm(x))
         res_df['리명'] = res_df['리명'].apply(lambda x: self._clean_bjd_nm(x))
+        res_df['시도명'] = res_df['시도명'].apply(lambda x: x.replace(' ', ''))
+        # res_df['시군구명'] = res_df['시군구명'].apply(lambda x: x.replace(' ', ''))
+        res_df['읍면동명'] = res_df['읍면동명'].apply(lambda x: x.replace(' ', ''))
+        res_df['리명'] = res_df['리명'].apply(lambda x: x.replace(' ', ''))
         res_df['법정동명'] = res_df[[
             '시도명',
             '시군구명',
