@@ -98,6 +98,21 @@ class ConvAddr():
         with open(file_name_multiple_word_sgg_list, 'r') as file_multiple_word_sgg_list:
             self.multiple_word_sgg_list: List[str] = [line.strip() for line in file_multiple_word_sgg_list]
 
+        bjd_df: pd.DataFrame = pd.read_csv(
+            file_name_bjd,
+            sep=input_sep,
+            engine='python',
+            encoding=input_encoding,
+            dtype={
+                '과거법정동코드': str,
+                '법정동코드': str
+            })
+        self.bjd_df = bjd_df
+        self.sido_list: List[str] = list(sido for sido in bjd_df['시도명'].unique() if isinstance(sido, str))
+        self.sgg_list: List[str] = list(sgg for sgg in bjd_df['시군구명'].unique() if isinstance(sgg, str))
+        self.emd_list: List[str] = list(emd for emd in bjd_df['읍면동명'].unique() if isinstance(emd, str))
+        self.ri_list: List[str] = list(ri for ri in bjd_df['리명'].unique() if isinstance(ri, str))
+
         bjd_current_df: pd.DataFrame = pd.read_csv(
             file_name_bjd_current,
             sep=input_sep,
@@ -116,7 +131,11 @@ class ConvAddr():
             file_name_bjd_changed,
             sep=input_sep,
             engine='python',
-            encoding=input_encoding)
+            encoding=input_encoding,
+            dtype={
+                '과거법정동코드': str,
+                '법정동코드': str
+            })
         sub_bjd_changed_df = bjd_changed_df.loc[
             (bjd_changed_df['법정동명_변경후'].isnull()==False) &
             (bjd_changed_df['법정동명_변경전'].isnull()==False)
