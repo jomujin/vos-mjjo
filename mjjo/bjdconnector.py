@@ -1,3 +1,4 @@
+import pandas as pd
 from typing import (
     List,
     Dict,
@@ -237,6 +238,9 @@ class BjdConnectorGraph():
 
     def __init__(self):
         self.bjd_connectors: Dict[str, BjdConnector] = dict()
+        self._creates_bjd_connectors()
+        self._update_bjd_connectors()
+        self._check_bjd_connectors_bottom_counts()
 
     def _creates_bjd_connectors(self):
         for _ in self.bjd_current_df[["법정동코드", "법정동명"]].itertuples():
@@ -277,3 +281,175 @@ class BjdConnectorGraph():
                 # 4311132026 충청북도 청주시 상당구 미원면 기암리
                 # 4311132033 충청북도 청주시 상당구 미원면 기암리
                 raise ValueError(f"{bjd_cd}: Count of bottom values is not same")
+
+
+@dataclass
+class FullBjdConnector():
+
+    CA = ConvAddr()
+    BCG = BjdConnectorGraph()
+    bjd_connectors = BCG.bjd_connectors
+    multiple_word_sgg_list = CA.multiple_word_sgg_list
+
+    def __init__(
+        self,
+        full_bjd_cd: str,
+        full_bjd_nm: str,
+        created_dt: str,
+        deleted_dt: str,
+        before_bjd_cd: str
+    ):
+        self.full_bjd_cd: str = full_bjd_cd
+        self.full_bjd_nm: str = full_bjd_nm
+        self.is_exist: bool = None
+        self.created_dt: Optional[str] = created_dt
+        self.deleted_dt: Optional[str] = deleted_dt
+        self.before_bjd_cd: Optional[str] = before_bjd_cd
+        self.before: List[FullBjdConnector] = []
+        self.after: List[FullBjdConnector] = []
+        self.is_smallest: bool = None
+        self.sido: Optional[bool] = None
+        self.sgg: Optional[bool] = None
+        self.emd: Optional[bool] = None
+        self.ri: Optional[bool] = None
+        self.sido_nm: Optional[str] = None
+        self.sgg_nm: Optional[str] = None
+        self.emd_nm: Optional[str] = None
+        self.ri_nm: Optional[str] = None
+        self.sido_cd: Optional[str] = None
+        self.sgg_cd: Optional[str] = None
+        self.emd_cd: Optional[str] = None
+        self.ri_cd: Optional[str] = None
+        self.sido_bjd_connector: Optional[BjdConnector] = None
+        self.sgg_bjd_connector: Optional[BjdConnector] = None
+        self.emd_bjd_connector: Optional[BjdConnector] = None
+        self.ri_bjd_connector: Optional[BjdConnector] = None
+        self.is_exist = self._get_is_exist()
+        self._get_bjd_connectors()
+
+    def _split_full_bjd_nm(
+        self
+    ):
+        if self.full_bjd_cd is not None:
+            for multiple_sgg_nm in self.multiple_word_sgg_list:
+                if multiple_sgg_nm in self.full_bjd_nm:
+                    return [multiple_sgg_nm] + self.full_bjd_nm.replace(multiple_sgg_nm, "").split()
+            return self.full_bjd_nm.split()
+        return []
+
+    def _get_is_exist(self):
+        if self.deleted_dt is not None: return False
+        return True
+
+    def _get_bjd_cd_and_nm_from_typ(
+        self, 
+        bjd_connector
+    ):
+        typ = bjd_connector.typ
+        setattr(self, f"{typ}", True)
+        setattr(self, f"{typ}_cd", bjd_connector.bjd_cd)
+        setattr(self, f"{typ}_nm", bjd_connector.bjd_nm)
+        setattr(self, f"{typ}_bjd_connector", bjd_connector)
+
+    def _get_each_bjd_connector(
+        self,
+        bjd_connector_list: List[BjdConnector], 
+        full_bjd_nm_list: List[str]
+    ):
+        if len(bjd_connector_list) and len(full_bjd_nm_list):
+            included_bjds = []
+            for bjd_connector in bjd_connector_list:
+                if bjd_connector.bjd_nm in full_bjd_nm_list:
+                    included_bjds.append(bjd_connector.bjd_nm)
+                    full_bjd_nm_list.remove(bjd_connector.bjd_nm)
+
+                    self._get_bjd_cd_and_nm_from_typ(bjd_connector)
+                    self._get_each_bjd_connector(
+                        bjd_connector.top_bjd,
+                        full_bjd_nm_list
+                    )
+            if len(included_bjds) == 0:
+                raise ValueError(f"{[bjd_connector.bjd for bjd_connector in bjd_connector_list]}, Not in This Full Bjd Name List {full_bjd_nm_list}")
+
+    def _get_bjd_connectors(self):
+        full_bjd_nm_list = self._split_full_bjd_nm()
+        start_bjd_connector = self.bjd_connectors[self.full_bjd_cd] # 가장 작은 단위의 법정동
+        try:
+            self._get_each_bjd_connector([start_bjd_connector], full_bjd_nm_list)
+        except:
+            print(f"Error Full Bjd Name List: {full_bjd_nm_list}, Bjd Code: {self.full_bjd_cd}")
+
+    def _print(self):
+        print(f"full_bjd_cd: {self.full_bjd_cd}")
+        print(f"full_bjd_nm: {self.full_bjd_nm}")
+        print(f"is_exist: {self.is_exist}")
+        print(f"created_dt: {self.created_dt}")
+        print(f"deleted_dt: {self.deleted_dt}")
+        print(f"before: {self.before}")
+        print(f"after: {self.after}")
+        print(f"is_smallest: {self.is_smallest}")
+        print(f"sido: {self.sido}")
+        print(f"sgg: {self.sgg}")
+        print(f"emd: {self.emd}")
+        print(f"ri: {self.ri}")
+        print(f"sido_nm: {self.sido_nm}")
+        print(f"sgg_nm: {self.sgg_nm}")
+        print(f"emd_nm: {self.emd_nm}")
+        print(f"ri_nm: {self.ri_nm}")
+        print(f"sido_cd: {self.sido_cd}")
+        print(f"sgg_cd: {self.sgg_cd}")
+        print(f"emd_cd: {self.emd_cd}")
+        print(f"ri_cd: {self.ri_cd}")
+        print(f"sido_bjd_connector: {self.sido_bjd_connector}")
+        print(f"sgg_bjd_connector: {self.sgg_bjd_connector}")
+        print(f"emd_bjd_connector: {self.emd_bjd_connector}")
+        print(f"ri_bjd_connector: {self.ri_bjd_connector}")
+
+
+@dataclass
+class FullBjdGConnectorGraph():
+
+    CA = ConvAddr()
+    BCG = BjdConnectorGraph()
+    bjd_df = CA.bjd_df
+    bjd_connectors = BCG.bjd_connectors
+
+    def __init__(self):
+        self.full_bjd_connectors: Dict[str, FullBjdConnector] = dict()
+        self._creates_full_bjd_connectors()
+        self._update_before_and_after()
+
+    @staticmethod
+    def _replace_nan_with_none(df: pd.DataFrame):
+        return df.where(pd.notna(df), None)
+
+    def _creates_full_bjd_connectors(self):
+        self.bjd_df = self.bjd_df[[
+                "과거법정동코드",
+                "법정동코드",
+                "삭제일자",
+                "생성일자",
+                "법정동명"
+            ]]
+        self.bjd_df = self._replace_nan_with_none(self.bjd_df)
+        for _ in self.bjd_df.itertuples():
+            before_bjd_cd = str(_.과거법정동코드) if _.과거법정동코드 is not None else None
+            full_bjd_cd = str(_.법정동코드) if _.법정동코드 is not None else None
+            full_bjd_nm = str(_.법정동명) if _.법정동명 is not None else None
+            created_dt = str(_.생성일자) if _.생성일자 is not None else None
+            deleted_dt = str(_.삭제일자) if _.삭제일자 is not None else None
+
+            self.full_bjd_connectors[full_bjd_cd] = FullBjdConnector(
+                full_bjd_cd=full_bjd_cd,
+                full_bjd_nm=full_bjd_nm,
+                created_dt=created_dt,
+                deleted_dt=deleted_dt,
+                before_bjd_cd=before_bjd_cd
+            )
+
+    def _update_before_and_after(self):
+        for bjd_cd, full_bjd_connector in self.full_bjd_connectors.items():
+            if full_bjd_connector.before_bjd_cd is not None \
+            and full_bjd_connector.before_bjd_cd in self.full_bjd_connectors.keys():
+                self.full_bjd_connectors[bjd_cd].before.append(self.full_bjd_connectors[full_bjd_connector.before_bjd_cd])
+                self.full_bjd_connectors[full_bjd_connector.before_bjd_cd].after.append(self.full_bjd_connectors[bjd_cd])
