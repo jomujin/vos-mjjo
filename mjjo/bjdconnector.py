@@ -1,3 +1,5 @@
+import pickle
+import _pickle as cPickle
 import pandas as pd
 from typing import (
     List,
@@ -453,3 +455,84 @@ class FullBjdGConnectorGraph():
             and full_bjd_connector.before_bjd_cd in self.full_bjd_connectors.keys():
                 self.full_bjd_connectors[bjd_cd].before.append(self.full_bjd_connectors[full_bjd_connector.before_bjd_cd])
                 self.full_bjd_connectors[full_bjd_connector.before_bjd_cd].after.append(self.full_bjd_connectors[bjd_cd])
+
+
+@dataclass
+class ConvAddrByBjdConnector():
+
+    bjd_connectors = None
+    full_bjd_connectors = None
+
+    @classmethod
+    def load_data(cls):
+        if cls.bjd_connectors is None:
+            with open("mjjo/data/bjd_connectors.pkl", "rb") as f:
+                cls.bjd_connectors = cPickle.load(f)
+                print("Done loaded bjd_connectors.pkl")
+        if cls.full_bjd_connectors is None:
+            with open("mjjo/data/full_bjd_connectors.pkl", "rb") as f:
+                cls.full_bjd_connectors = cPickle.load(f)
+                print("Done loaded full_bjd_connectors.pkl")
+
+    def __init__(self):
+        self.load_data()
+
+    def _get_bjd_connectors(
+        self,
+        addr: str,
+        bjd_connector: BjdConnector
+    ):
+        if bjd_connector.is_smallest:
+            return bjd_connector
+
+        for bottom_bjd_connector in bjd_connector.bottom_bjd:
+            if bottom_bjd_connector.bjd_nm in addr:
+                result = self._get_bjd_connectors(addr, bottom_bjd_connector)
+                if result is not None:
+                    return result
+        return None
+
+    def _get_correct_bjd_connector(
+        self,
+        addr: str
+    ):
+        for bjd_connector in self.bjd_connectors.values():
+            if bjd_connector.typ == 'sido' \
+            and bjd_connector.bjd_nm in addr:
+                return self._get_bjd_connectors(addr, bjd_connector)
+
+    def _get_full_bjd_connector_by_bjd_connector(
+        self,
+        bjd_connector: BjdConnector
+    ):
+        return self.full_bjd_connectors[bjd_connector.bjd_cd]
+
+    def _get_recently_full_bjd_connector(
+        self,
+        full_bjd_connector: FullBjdConnector
+    ):
+        if len(full_bjd_connector.after):
+            if len(full_bjd_connector.after) > 1:
+                print(f"{full_bjd_connector.after}가 복수개 존재합니다. 1번째 값을 이용합니다.")
+            # print(f"{full_bjd_connector.full_bjd_nm} -> {full_bjd_connector.after[0].full_bjd_nm}")
+            return self._get_recently_full_bjd_connector(full_bjd_connector.after[0])
+        return full_bjd_connector
+
+    def get_full_bjd_connector_by_address(
+        self,
+        addr: Optional[str]
+    ):
+
+        if not isinstance(addr, str):
+            raise TypeError("type of object('addr') must be string")
+
+        if addr is None:
+            raise ValueError("addr is None")
+            
+        bjd_connector = self._get_correct_bjd_connector(addr)
+        if bjd_connector is not None:
+            full_bjd_connector = self._get_full_bjd_connector_by_bjd_connector(bjd_connector)
+            full_bjd_connector = self._get_recently_full_bjd_connector(full_bjd_connector)
+            return full_bjd_connector
+        else:
+            return None
