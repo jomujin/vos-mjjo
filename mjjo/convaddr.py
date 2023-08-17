@@ -11,24 +11,6 @@ from mjjo.bjd import Bjd
 
 
 @dataclass
-class Address():
-
-
-    def __init__(
-        self,
-        address: str
-    ):
-        self.address: str = address
-        self.main_address: str = None
-        self.detail_address: str = None
-        self.smallest_bjd: str = None
-        self.sido: str = None
-        self.sgg: str = None
-        self.emd: str = None
-        self.ri: str = None
-
-
-@dataclass
 class ConvAddr():
 
 
