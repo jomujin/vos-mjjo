@@ -16,7 +16,9 @@ from dataclasses import dataclass
 from mjjo import Log
 from mjjo.library.data import (
     ADD_BJD_CHANGED_DICTIONARY,
-    CORRECT_ERROR_BJD
+    CORRECT_ERROR_BJD,
+    ADD_BJD,
+    DELETE_BJD
 )
 
 
@@ -70,6 +72,8 @@ class Bjd():
         self.logger = Log('Bjd').stream_handler("INFO")
         self.add_bjd_changed_dictionary: Dict[str, str] = ADD_BJD_CHANGED_DICTIONARY
         self.correct_error_bjd: Dict[Dict[str, Optional[str]]] = CORRECT_ERROR_BJD
+        self.add_bjd: List[Dict[str, Optional[str]]] = ADD_BJD
+        self.delete_bjd: List[str] = DELETE_BJD
         self.multiple_word_sgg_list: List[str] = list()
 
     @staticmethod
@@ -113,6 +117,13 @@ class Bjd():
         for cor_bjd_cd, cor_values in self.correct_error_bjd.items():
             for col_nm, cor_value in cor_values.items():
                 api_dic[cor_bjd_cd][col_nm] = cor_value
+
+        for add_bjd_data in self.add_bjd:
+            api_dic[add_bjd_data['법정동코드']] = add_bjd_data
+
+        for del_bjd in self.delete_bjd:
+            del api_dic[del_bjd]
+
         return api_dic
 
     def _correct_prev_bjd_cd(
@@ -218,6 +229,7 @@ class Bjd():
             '읍면동명',
             '리명'
         ]].apply(lambda x: self._get_full_bjd_nm(*x), axis=1)
+        res_df = res_df.reset_index(drop=True)
         return res_df
     
     def _create_bjd(self):
