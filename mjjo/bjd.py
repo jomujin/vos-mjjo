@@ -343,10 +343,10 @@ class ChangedBjd(Bjd):
             return None
         try:
             data = self.bjd_api_dictionary[prev_bjd_cd]
-            sido_nm = data['시도명']
-            sgg_nm = data['시군구명']
-            emd_nm = data['읍면동명']
-            ri_nm = data['리명']
+            sido_nm = self._clean_bjd_nm(data['시도명']).replace(' ', '')
+            sgg_nm = self._clean_bjd_nm(data['시군구명'])
+            emd_nm = self._clean_bjd_nm(data['읍면동명']).replace(' ', '')
+            ri_nm = self._clean_bjd_nm(data['리명']).replace(' ', '')
 
             return self._get_full_bjd_nm(
                 sido_nm,
