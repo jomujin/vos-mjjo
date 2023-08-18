@@ -2,7 +2,7 @@ vos-mjjo <br>
 [![PyPI version](https://badge.fury.io/py/vos-mjjo.svg)](https://pypi.org/project/vos-mjjo/)
 ========
 
-vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.0.0
+vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.0.1
 
 </br>
 
@@ -53,6 +53,30 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.
 -   Update Convaddr class
     -   Add method (union_similar_changed_bjd)
     -   Update method (correct_changed_bjd)
+
+### Update 1.0.1 - 2023.08
+
+-   Update Bjd file data for Convaddr internal functions
+-   Structuring the Relationship Between Legal Administrative Districts
+-   Built BjdObject class
+    -   Built metadata with essential functionality
+    -   Developed internal functions within the class
+-   Built BjdConnector class
+    -   Built metadata with essential functionality
+    -   Developed internal functions within the class
+-   Built BjdConnectorGraph class
+    -   Built metadata with essential functionality
+    -   Developed internal functions within the class
+-   Built FullBjdConnector class
+    -   Built metadata with essential functionality
+    -   Developed internal functions within the class
+-   Built FullBjdConnectorGraph class
+    -   Built metadata with essential functionality
+    -   Developed internal functions within the class
+-   Built ConvAddrByBjdConnector class
+    -   Built metadata with essential functionality
+    -   Developed internal functions within the class
+    -   Created pickle file for ConvAddrByBjdConnector internal functions
 
 </br>
 
