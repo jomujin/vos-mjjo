@@ -1,5 +1,5 @@
 import pickle
-import _pickle as cPickle
+import pkg_resources
 import pandas as pd
 from typing import (
     List,
@@ -462,16 +462,25 @@ class ConvAddrByBjdConnector():
 
     bjd_connectors = None
     full_bjd_connectors = None
+    file_name_bjd_connectors = pkg_resources.resource_filename(
+        "mjjo", 
+        "data/bjd_connectors.pkl"
+    )
+    file_name_full_bjd_connectors = pkg_resources.resource_filename(
+        "mjjo", 
+        "data/full_bjd_connectors.pkl"
+    )
+
 
     @classmethod
     def load_data(cls):
         if cls.bjd_connectors is None:
-            with open("mjjo/data/bjd_connectors.pkl", "rb") as f:
-                cls.bjd_connectors = cPickle.load(f)
+            with open(cls.file_name_bjd_connectors, "rb") as f:
+                cls.bjd_connectors = pickle.load(f)
                 print("Done loaded bjd_connectors.pkl")
         if cls.full_bjd_connectors is None:
-            with open("mjjo/data/full_bjd_connectors.pkl", "rb") as f:
-                cls.full_bjd_connectors = cPickle.load(f)
+            with open(cls.file_name_full_bjd_connectors, "rb") as f:
+                cls.full_bjd_connectors = pickle.load(f)
                 print("Done loaded full_bjd_connectors.pkl")
 
     def __init__(self):
