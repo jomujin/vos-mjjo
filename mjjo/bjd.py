@@ -28,10 +28,10 @@ class Bjd():
 
     def __init__(self):
         load_dotenv()
+        try: self.api_key: str = os.environ['BJD_API_KEY']
+        except: self.api_key = None
         self.api_base_url: str = "https://api.odcloud.kr/api"
         self.api_get_url: str = "/15063424/v1/uddi:257e1510-0eeb-44de-8883-8295c94dadf7" # https://www.data.go.kr/data/15063424/fileData.do#layer-api-guide API 목록 중 국토교통부_전국 법정동_20230710 GET
-        # self.api_key: str = os.environ['BJD_API_KEY']
-        self.api_key = None
         self.api_page: int = 0
         self.api_per_page: int = 1024
         self.bjd_api_dictionary: Dict[str, Dict[str, str]] = None
