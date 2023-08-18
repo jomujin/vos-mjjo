@@ -63,12 +63,6 @@ class Bjd():
             "mjjo", 
             "data/multiple_word_sgg_list.txt"
         )
-        # self.file_path: str = f'{os.getcwd()}/mjjo/data'
-        # self.file_name_bjd: str = f'{self.file_path}/bjd.txt'
-        # self.file_name_bjd_current: str = f'{self.file_path}/bjd_current.txt'
-        # self.file_name_bjd_changed: str = f'{self.file_path}/bjd_changed.txt'
-        # self.file_name_bjd_smallest: str = f'{self.file_path}/bjd_smallest.txt'
-        # self.file_name_bjd_frequency_dictionary: str = f'{self.file_path}/bjd_frequency_dictionary.txt'
         self.logger = Log('Bjd').stream_handler("INFO")
         self.add_bjd_changed_dictionary: Dict[str, str] = ADD_BJD_CHANGED_DICTIONARY
         self.correct_error_bjd: Dict[Dict[str, Optional[str]]] = CORRECT_ERROR_BJD
@@ -404,11 +398,6 @@ class ChangedBjd(Bjd):
             '삭제일자': '삭제일자_변경후',
             '과거법정동코드': '법정동코드_변경전',
         })
-        # self.changed_bjd_df['법정동코드_변경전'] = self.changed_bjd_df[[
-        #     '시도명',
-        #     '법정동코드_변경전',
-        #     '법정동코드_변경후'
-        # ]].apply(lambda x: self._create_gangwon_prev_bjd_cd(*x), axis=1)
         self.changed_bjd_df = self.changed_bjd_df[[
             '법정동코드_변경후',
             '법정동명_변경후',
