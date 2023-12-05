@@ -78,6 +78,12 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.
     -   Developed internal functions within the class
     -   Created pickle file for ConvAddrByBjdConnector internal functions
 
+### Update 1.0.4 - 2023.12
+
+-   Version Update
+    -   Update the date dictionary to reflect the time reference of 2023.12
+    -   Update Bjd file data to reflect the time reference of 2023.12
+
 </br>
 
 # Install
