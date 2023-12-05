@@ -2,7 +2,7 @@ vos-mjjo <br>
 [![PyPI version](https://badge.fury.io/py/vos-mjjo.svg)](https://pypi.org/project/vos-mjjo/)
 ========
 
-vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.0.3
+vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.0.4
 
 </br>
 
