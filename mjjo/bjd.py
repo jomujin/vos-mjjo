@@ -292,6 +292,7 @@ class Bjd():
         smallest_bjd._save_smallest_bjd()
         bjd_frequency_dictionary._save_bjd_frequency_dictionary()
 
+
 @dataclass
 class CurrentBjd(Bjd):
 
@@ -319,6 +320,7 @@ class CurrentBjd(Bjd):
             index=self.output_index
         )
         self.logger.info("Success Saved Current Bjd Dataframe To Text File")
+
 
 @dataclass
 class ChangedBjd(Bjd):
@@ -364,6 +366,7 @@ class ChangedBjd(Bjd):
             return self.bjd_api_dictionary[prev_bjd_cd][value_nm]
         except:
             return None
+
 
     @staticmethod
     def _find_diff(
@@ -437,6 +440,7 @@ class ChangedBjd(Bjd):
         )
         self.logger.info("Success Saved Changed Bjd Dataframe To Text File")
 
+
 @dataclass
 class SmallestBjd(CurrentBjd):
 
@@ -462,6 +466,7 @@ class SmallestBjd(CurrentBjd):
             f.writelines('\n'.join(self.smallest_bjd_list))
             f.close()
         self.logger.info("Success Saved Changed Smallest Bjd Name List To Text File")
+
 
 @dataclass
 class BjdFrequencyDictionary(CurrentBjd):
