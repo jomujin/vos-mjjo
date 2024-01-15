@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import pickle
 from typing import (
     List,
     Dict,
@@ -30,8 +31,9 @@ class Bjd():
         load_dotenv()
         try: self.api_key: str = os.environ['BJD_API_KEY']
         except: self.api_key = None
-        self.api_base_url: str = "https://api.odcloud.kr/api"
+        self.api_base_url: str = "https://api.odcloud.kr/api" # https://www.data.go.kr/iim/api/selectAPIAcountView.do
         self.api_get_url: str = "/15063424/v1/uddi:257e1510-0eeb-44de-8883-8295c94dadf7" # https://www.data.go.kr/data/15063424/fileData.do#layer-api-guide API 목록 중 국토교통부_전국 법정동_20230710 GET
+        self.update_dir_path: str = "mjjo/data/update"
         self.api_page: int = 0
         self.api_per_page: int = 1024
         self.bjd_api_dictionary: Dict[str, Dict[str, str]] = None
@@ -102,6 +104,16 @@ class Bjd():
                 api_page += 1
             else:
                 break
+        return res_dic
+
+    def _update_data(
+        self,
+        res_dic: Dict[str, Dict[str, str]]
+    ):
+        for file_path in os.listdir(self.update_dir_path):
+            with open(f"{self.update_dir_path}/{file_path}", 'rb') as file:
+                update_dic = pickle.load(file)
+                res_dic.update(update_dic)
         return res_dic
 
     def _correct_error(
