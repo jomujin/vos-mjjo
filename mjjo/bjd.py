@@ -244,6 +244,7 @@ class Bjd():
         """
 
         res_dic = self._crawl_api()
+        res_dic = self._update_data(res_dic)
         res_dic = self._correct_error(res_dic)
         res_df = self._make_dataframe(res_dic)
         self.bjd_api_dictionary = res_dic
