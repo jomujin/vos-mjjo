@@ -162,4 +162,4 @@ cython_debug/
 /package/date_dictionary.txt
 *.ipynb
 *.DS_Store
-
+/mjjo/data/history/
