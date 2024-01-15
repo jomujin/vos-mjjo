@@ -109,7 +109,7 @@ class Bjd():
     def _update_data(
         self,
         res_dic: Dict[str, Dict[str, str]]
-    ):
+    ) -> Dict[str, Dict[str, str]]:
         for file_path in os.listdir(self.update_dir_path):
             with open(f"{self.update_dir_path}/{file_path}", 'rb') as file:
                 update_dic = pickle.load(file)
