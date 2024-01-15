@@ -163,3 +163,7 @@ cython_debug/
 *.ipynb
 *.DS_Store
 /mjjo/data/history/
+
+bjd.parquet
+KB_재사정_주소매칭_학습데이터.csv
+kb_response.csv
