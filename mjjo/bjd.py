@@ -106,16 +106,6 @@ class Bjd():
                 break
         return res_dic
 
-    def _update_data(
-        self,
-        res_dic: Dict[str, Dict[str, str]]
-    ) -> Dict[str, Dict[str, str]]:
-        for file_path in os.listdir(self.update_dir_path):
-            with open(f"{self.update_dir_path}/{file_path}", 'rb') as file:
-                update_dic = pickle.load(file)
-                res_dic.update(update_dic)
-        return res_dic
-
     def _correct_error(
         self,
         api_dic: Dict[str, Dict[str, str]]
@@ -131,6 +121,24 @@ class Bjd():
             del api_dic[del_bjd]
 
         return api_dic
+
+    def _update_data(
+        self,
+        res_dic: Dict[str, Dict[str, str]]
+    ) -> Dict[str, Dict[str, str]]:
+        if not os.path.exists(self.update_dir_path):
+            self.logger(f"Directory does not exist: {self.update_dir_path}")
+            return res_dic
+
+        if not os.listdir(self.update_dir_path):
+            self.logger(f"No files found in the directory: {self.update_dir_path}")
+            return res_dic
+
+        for file_path in os.listdir(self.update_dir_path):
+            with open(f"{self.update_dir_path}/{file_path}", 'rb') as file:
+                update_dic = pickle.load(file)
+                res_dic.update(update_dic)
+        return res_dic
 
     def _correct_prev_bjd_cd(
         self,
