@@ -33,7 +33,7 @@ class Bjd():
         except: self.api_key = None
         self.api_base_url: str = "https://api.odcloud.kr/api" # https://www.data.go.kr/iim/api/selectAPIAcountView.do
         self.api_get_url: str = "/15063424/v1/uddi:257e1510-0eeb-44de-8883-8295c94dadf7" # https://www.data.go.kr/data/15063424/fileData.do#layer-api-guide API 목록 중 국토교통부_전국 법정동_20230710 GET
-        self.update_dir_path: str = "mjjo/data/update"
+        self.update_dir_path: str = "mjjo/data/update" # 행정안전부 https://www.mois.go.kr/frt/bbs/type001/commonSelectBoardList.do?bbsId=BBSMSTR_000000000052
         self.api_page: int = 0
         self.api_per_page: int = 1024
         self.bjd_api_dictionary: Dict[str, Dict[str, str]] = None
