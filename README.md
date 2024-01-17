@@ -2,7 +2,7 @@ vos-mjjo <br>
 [![PyPI version](https://badge.fury.io/py/vos-mjjo.svg)](https://pypi.org/project/vos-mjjo/)
 ========
 
-vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.0.4
+vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.0.5
 
 </br>
 
@@ -35,7 +35,7 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.
 ### Update 0.0.12 - 2023.08
 
 -   Version Update
-    -   Update the date dictionary to reflect the time reference of 2023.08
+    -   Update the date dictionary to reflect the time reference of August 2023
 
 ### Update 0.0.13 - 2023.08
 
@@ -81,8 +81,18 @@ vos-mjjo is a Python port of [Vos-Mjjo](https://github.com/jomujin/vos-mjjo) v1.
 ### Update 1.0.4 - 2023.12
 
 -   Version Update
-    -   Update the date dictionary to reflect the time reference of 2023.12
-    -   Update Bjd file data to reflect the time reference of 2023.12
+    -   Update the date dictionary to reflect the time reference of December 2023
+    -   Update Bjd file data to reflect the time reference of December 2023
+
+### Update 1.0.5 - 2024.01
+
+-   Update and Design the Structure for Managing Changes in Administrative Districts
+-   Version Update
+    -   Update the date dictionary to reflect the time reference of January 2024
+    -   Update Bjd file data to reflect the time reference of January 2024
+    -   Reflect Changes in Administrative Districts as of January 2024
+        -   January 1, 2024: Changes in administrative districts related to '부천시'
+        -   January 18, 2024: Changes in administrative districts related to '전북특별자치도'
 
 </br>
 
@@ -369,9 +379,27 @@ Output:
 강원특별자치도 춘천시 서면 현암리 1-1
 ```
 
+```python
+from mjjo import convaddr
+
+CA = convaddr.ConvAddr()
+
+test_addr = "강원도 춘천시 서면 현암리 1-1"
+result = CA.correct_changed_bjd(addr=test_addr, is_log=True)
+print(result)
+```
+
+Output:
+
+```python
+2024-01-17 14:03:27 | [INFO] | 강원도 춘천시 서면 현암리
+2024-01-17 14:03:27 | [INFO] | 해당 법정동명은 변경되었습니다. 변경전 : [ 강원도 춘천시 서면 현암리 ] 변경후 : [ 강원특별자치도 춘천시 서면 현암리 ]
+강원특별자치도 춘천시 서면 현암리
+```
+
 </br>
 
-**convaddr.test_correct_bjd**
+**convaddr.correct_bjd**
 
 ```python
 from mjjo import convaddr
@@ -379,7 +407,7 @@ from mjjo import convaddr
 CA = convaddr.ConvAddr()
 # ConvAddr 클래스 부여
 test_addr = "서울시 강남구 삼성동 1"
-result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+result = CA.correct_bjd(addr=test_addr, is_log=True)
 # 문자열(한글 주소) correct_simple_spacing, correct_smallest_bjd_spacing, correct_changed_bjd 순차적으로 실행하여 변환값 반환
 # is_log: bool = True
 # is_log == True 일 경우, 변경전 법정동명과 변경후 법정동명을 출력
@@ -397,26 +425,36 @@ from mjjo import convaddr
 
 CA = convaddr.ConvAddr()
 
+test_addr = "강원도춘천시 서면 현암리 1-1",
+result = CA.correct_bjd(addr=test_addr, is_log=False)
+print(result)
+
+test_addr = "강원도 춘천 시 서면 현암리 1-1"
+result = CA.correct_bjd(addr=test_addr, is_log=False)
+print(result)
+
 test_addr = "강원도 춘천시 서면 현암리"
-result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+result = CA.correct_bjd(addr=test_addr, is_log=False)
 print(result)
 
 test_addr = "강원도 춘천시 서면 현암리 1-1"
-result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+result = CA.correct_bjd(addr=test_addr, is_log=False)
 print(result)
 
 test_addr = "강원도 춘천시 서면 현암리1-1"
-result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+result = CA.correct_bjd(addr=test_addr, is_log=False)
 print(result)
 
 test_addr = "강원도   춘천시 서면 현암리 1-1",
-result = CA.test_correct_bjd(addr=test_addr, is_log=False)
+result = CA.correct_bjd(addr=test_addr, is_log=False)
 print(result)
 ```
 
 Output:
 
 ```python
+강원도춘천시 서면 현암리 1-1 # 시도, 시군구와 같이 최소단위 법정동의 띄어쓰기가 올바르지 않을 경우, 변환 불가
+강원도 춘천 시 서면 현암리 1-1 # 시도, 시군구와 같이 최소단위 법정동의 띄어쓰기가 올바르지 않을 경우, 변환 불가
 강원특별자치도 춘천시 서면 현암리
 강원특별자치도 춘천시 서면 현암리 1-1
 강원특별자치도 춘천시 서면 현암리 1-1
