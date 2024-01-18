@@ -22,7 +22,7 @@ vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.
     -   Add module tests
 
 </details>
-<div style="line-height:50%;"><br></div>
+<!-- <div style="line-height:50%;"><br></div> -->
 
 <details>
 <summary><strong>Version 0.0.10 - 2023.05</strong></summary>
@@ -37,7 +37,7 @@ vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.
     -   Add module tests
 
 </details>
-<div style="line-height:50%;"><br></div>
+<!-- <div style="line-height:50%;"><br></div> -->
 
 <details>
 <summary><strong>Version 0.0.11 - 2023.05</strong></summary>
@@ -48,7 +48,7 @@ vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.
     -   By applying the zfill(8) method, the strftime method will generate a date string with 8 characters, ensuring that leading zeros are included for years below 1000
 
 </details>
-<div style="line-height:50%;"><br></div>
+<!-- <div style="line-height:50%;"><br></div> -->
 
 <details>
 <summary><strong>Version 0.0.12 - 2023.08</strong></summary>
@@ -59,7 +59,7 @@ vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.
     -   Update the date dictionary to reflect the time reference of August 2023
 
 </details>
-<div style="line-height:50%;"><br></div>
+<!-- <div style="line-height:50%;"><br></div> -->
 
 <details>
 <summary><strong>Version 0.0.13 - 2023.08</strong></summary>
@@ -76,7 +76,7 @@ vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.
     -   Add module tests
 
 </details>
-<div style="line-height:50%;"><br></div>
+<!-- <div style="line-height:50%;"><br></div> -->
 
 <details>
 <summary><strong>Version 1.0.0 - 2023.08</strong></summary>
@@ -88,7 +88,7 @@ vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.
     -   Update method (correct_changed_bjd)
 
 </details>
-<div style="line-height:50%;"><br></div>
+<!-- <div style="line-height:50%;"><br></div> -->
 
 <details>
 <summary><strong>Version 1.0.1 - 2023.08</strong></summary>
@@ -118,7 +118,7 @@ vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.
     -   Created pickle file for ConvAddrByBjdConnector internal functions
 
 </details>
-<div style="line-height:50%;"><br></div>
+<!-- <div style="line-height:50%;"><br></div> -->
 
 <details>
 <summary><strong>Version 1.0.4 - 2023.12</strong></summary>
@@ -130,7 +130,7 @@ vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.
     -   Update Bjd file data to reflect the time reference of December 2023
 
 </details>
-<div style="line-height:50%;"><br></div>
+<!-- <div style="line-height:50%;"><br></div> -->
 
 <details>
 <summary><strong>Version 1.0.5 - 2024.01</strong></summary>
@@ -146,7 +146,7 @@ vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.
         -   January 18, 2024: Changes in administrative districts related to '전북특별자치도'
 
 </details>
-<div style="line-height:50%;"><br></div>
+<!-- <div style="line-height:50%;"><br></div> -->
 
 </br>
 
