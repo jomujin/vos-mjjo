@@ -688,6 +688,8 @@ pip install vos-mjjo
         is_smallest: False
         ```
 
+</br>
+
 **`BjdObject`**
 
 -   단위 법정동 오브젝트(Object) 클래스
