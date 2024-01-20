@@ -253,7 +253,7 @@ class ConvAddr():
         self,
         addr: str,
         is_log: bool = True
-    ):
+    ) -> str:
 
         """
         입력된 문자열(한글 주소)의 법정동명 교정하여 반환
