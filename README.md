@@ -2,7 +2,8 @@ vos-mjjo <br>
 [![PyPI version](https://badge.fury.io/py/vos-mjjo.svg)](https://pypi.org/project/vos-mjjo/)
 ========
 
-vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.0.5
+vos-mjjo is a Python port of [vos-mjjo](https://github.com/jomujin/vos-mjjo) v1.0.5 \
+The library has been integrated into [vos-data-utils](https://pypi.org/project/vos-data-utils/), and moving forward, data management and updates related to the library will be conducted. However, no further releases or distributions will be made.
 
 </br>
 
